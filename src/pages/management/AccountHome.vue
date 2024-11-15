@@ -14,7 +14,8 @@
             <h3>{{ account.title }}</h3>
             <p>{{ account.id }}</p>
           </div>
-          <span class="badge">{{ account.period }}</span>
+          <!-- account.period가 있을 때만 배지를 표시 -->
+          <span v-if="account.period" class="badge">{{ account.period }}</span>
           <button class="menu-button">⋮</button>
         </div>
         <div class="progress-bar-container">
@@ -34,7 +35,7 @@
   
   const accounts = ref([
     {
-      logo: './assets/tving-logo.png',
+      logo: new URL('../../assets/tving.png', import.meta.url).href,
       title: '6개월 티빙 모임',
       id: '45227485-25662',
       period: '팀장',
@@ -43,7 +44,7 @@
       participants: 4
     },
     {
-      logo: './assets/kakao-logo.png',
+      logo: new URL('../../assets/malhaevoca.png', import.meta.url).href,
       title: '말해보카로 영어공부',
       id: '120295485-45452',
       period: '',
@@ -52,12 +53,12 @@
       participants: 2
     },
     {
-      logo: './assets/wave-logo.png',
+      logo: new URL('../../assets/wavve.png', import.meta.url).href,
       title: '한 달 웨이브 모여라',
       id: '458987485-78662',
       period: '',
       progress: 30,
-      duration: '',
+      duration: '3개월',
       participants: 1
     }
   ])
@@ -99,8 +100,12 @@
   .logo {
     width: 50px;
     height: 50px;
-    margin-right: 16px;
+    margin-right: 20px;
     border-radius: 10px;
+  }
+  
+  .card-info {
+    flex: 1; 
   }
   
   .card-info h3 {
@@ -146,6 +151,7 @@
     font-size: 0.85rem;
     color: #888;
     margin-top: 4px;
+    text-align: right;
   }
   
   .participants {
