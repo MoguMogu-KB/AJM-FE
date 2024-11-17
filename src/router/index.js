@@ -30,7 +30,6 @@ const routes = [
     name: 'AccountList',
     component: AccountList
   }
-
 ]
 
 const router = createRouter({

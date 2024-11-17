@@ -33,12 +33,14 @@
         {{ account.isActive ? `현재 ${account.participants}명 참여 중` : '비활성화됨' }}
       </p>
     </div>
+    <Footer />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import Footer from '@/components/common/Footer.vue';
 
 const router = useRouter()
 
