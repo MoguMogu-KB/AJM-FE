@@ -148,7 +148,6 @@
     background-color: #f5f5f5;
   }
   
-  /* 생년월일과 이메일 그룹 */
   .birthday-group,
   .email-group {
     display: flex;
@@ -167,7 +166,6 @@
     margin-right: 0;
   }
   
-  /* 커스텀 드롭다운 */
   .custom-select {
     position: relative;
     width: 100%;
