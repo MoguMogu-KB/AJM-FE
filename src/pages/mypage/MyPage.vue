@@ -78,11 +78,13 @@
         <br>
         <button type="submit" class="submit-button">수정하기</button>
       </form>
+      <Footer />
     </div>
   </template>
   
   <script setup>
   import { reactive } from 'vue'
+  import Footer from '@/components/common/Footer.vue';
   
   const formData = reactive({
     name: '홍길동',

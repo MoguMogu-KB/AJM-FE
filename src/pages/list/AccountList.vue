@@ -1,12 +1,12 @@
 <template>
     <div class="account-list-container">
-      <!-- 상단 필터와 검색 -->
       <header class="header">
-        <img src="../../assets/logo.png" alt="안전모 로고" class="logo" />
+        <img src="../../assets/ajmlogo.png" alt="안전모 로고" class="logo" />
         <div class="filter-search">
           <button class="filter-button">필터</button>
           <input type="text" placeholder="검색" class="search-input" />
           <button class="search-button">검색</button>
+          <Footer />
         </div>
       </header>
   
@@ -23,9 +23,13 @@
         </div>
       </div>
   
-      <!-- 구독 추천 카드 -->
+      <br>
+     <h4>교육에 관심이 많은 당신을 위한</h4>
+     <h3>구독 서비스 추천</h3>
+     <br>
       <div class="recommendation-card">
-        <h3>교육에 관심이 많은 당신을 위한<br />구독 서비스 추천</h3>
+        <br>
+        <br>
       </div>
   
       <!-- 방 만들기 버튼 -->
@@ -35,6 +39,7 @@
   
   <script setup>
   import { ref } from "vue";
+  import Footer from '@/components/common/Footer.vue';
   
   const accounts = ref([
     {
@@ -62,7 +67,6 @@
   </script>
   
   <style scoped>
-  /* 컨테이너 */
   .account-list-container {
     padding: 20px;
     background-color: #f9f9f9;
@@ -77,7 +81,7 @@
   }
   
   .logo {
-    width: 80px;
+    width: 130px;
   }
   
   .filter-search {
@@ -173,7 +177,7 @@
   /* 방 만들기 버튼 */
   .create-room-button {
     display: block;
-    width: 100%;
+    width: 20%;
     padding: 15px;
     background-color: #fdbb2d;
     color: white;
@@ -183,6 +187,10 @@
     font-weight: bold;
     cursor: pointer;
     text-align: center;
+    position: fixed;
+    bottom: 110px;
+    right: 0;
+    z-index: 1000;
   }
   </style>
   

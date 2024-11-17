@@ -70,11 +70,13 @@
     </div>
     <br>
     <button class="leave-button">이 모임에서 나가기</button>
+    <Footer />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import Footer from '@/components/common/Footer.vue';
 
 const isLeader = ref(true); // 팀장 여부: true => 팀장, false => 팀원
 
