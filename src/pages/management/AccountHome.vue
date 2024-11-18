@@ -15,7 +15,6 @@
           <h3>{{ account.title }}</h3>
           <p>{{ account.idDetail }}</p>
         </div>
-        <!-- account.role(팀장/팀원) 표시 -->
         <span v-if="account.role" class="badge">{{ account.role }}</span>
         <button class="menu-button">⋮</button>
       </div>
