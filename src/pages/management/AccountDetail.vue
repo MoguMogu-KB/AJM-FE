@@ -35,9 +35,9 @@
     </div>
 
     <div class="pay-button-container">
-  <button class="pay-button">이번 달 회비 납부하기</button>
-</div>
-
+      <!-- 납부 버튼 -->
+      <button class="pay-button" @click="payMyMembershipFee">이번 달 회비 납부하기</button>
+    </div>
 
     <div class="member-status-container">
       <div class="member-status-header">
@@ -48,7 +48,10 @@
       <br>
       <div class="avatars">
         <div v-for="member in account.members" :key="member.id" class="avatar">
-          <img :src="avatarImage" alt="member avatar" />
+          <img
+            :src="member.paymentStatus === 'paid' ? putonAvatarImage : noneAvatarImage"
+            alt="member avatar"
+          />
           <p>{{ member.name }}</p>
         </div>
       </div>
@@ -63,7 +66,7 @@
         class="transaction"
       >
         <div class="transaction-info">
-          <strong>{{ transaction.name }}</strong><br>
+          <strong>{{ transaction.name }}</strong><br />
           <span>{{ transaction.date }}</span>
         </div>
         <span
@@ -78,39 +81,66 @@
     <Footer />
 
     <div v-if="isModalOpen" class="modal-backdrop">
-  <div class="modal" @click.stop>
-    <h3>👉 미납부자 쿡쿡 찌르기</h3>
-    <div v-if="isLeader">
-      <p>어떤 팀원을 찌르시겠습니까?</p>
-      <ul class="member-list">
-        <li v-for="member in teamMembersExcludingSelf" :key="member.id" class="member-item">
-          <span class="member-name">{{ member.name }}</span>
-          <button class="confirm-button" @click="pokeMember(member)">찌르기</button>
-        </li>
-      </ul>
+      <div class="modal" @click.stop>
+        <h3>👉 미납부자 쿡쿡 찌르기</h3>
+        <div v-if="isLeader">
+          <p>어떤 팀원을 찌르시겠습니까?</p>
+          <ul class="member-list">
+            <li
+              v-for="member in unpaidMembersExcludingSelf"
+              :key="member.id"
+              class="member-item"
+            >
+              <span class="member-name">{{ member.name }}</span>
+              <button class="confirm-button" @click="pokeMember(member)">찌르기</button>
+            </li>
+          </ul>
+        </div>
+        <div v-else>
+          <p>팀장을 찌르시겠습니까?</p>
+          <button class="confirm-button" @click="pokeLeader">팀장 찌르기</button>
+        </div>
+        <button class="close-button" @click="closeModal">닫기</button>
+      </div>
     </div>
-    <div v-else>
-      <p>팀장을 찌르시겠습니까?</p>
-      <button class="confirm-button" @click="pokeLeader">팀장 찌르기</button>
-    </div>
-    <button class="close-button" @click="closeModal">닫기</button>
-  </div>
-</div>
-
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed } from 'vue';
 import Footer from '@/components/common/Footer.vue';
 
-// 팀장 여부: true => 팀장, false => 팀원
-const isLeader = ref(true); 
+// 이미지 파일 경로
+const putonAvatarImage = new URL('../../assets/puton.png', import.meta.url).href;
+const noneAvatarImage = new URL('../../assets/none.png', import.meta.url).href;
 
+// 초기 데이터
+const isLeader = ref(true);
 const username = ref('ajm123');
 const password = ref('mySecretPassword');
 const isPasswordVisible = ref(false);
 
+const account = ref({
+  logo: new URL('../../assets/tving.png', import.meta.url).href,
+  title: '6개월 티빙 모임',
+  id: '45227485-25662',
+  progress: 70,
+  members: [
+    { id: 1, name: '홍길동', paymentStatus: 'unpaid' },
+    { id: 2, name: '김길동', paymentStatus: 'unpaid' },
+    { id: 3, name: '장길동', paymentStatus: 'unpaid' },
+    { id: 4, name: '조길동', paymentStatus: 'unpaid' },
+  ],
+  transactions: [
+    { id: 1, name: 'TVING 결제', date: '2024.11.08 12:40', amount: '17000', isMain: true },
+    { id: 2, name: '홍길동', date: '2024.11.07 12:40', amount: '4250', isMain: false },
+    { id: 3, name: '박소연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
+    { id: 4, name: '김미연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
+  ],
+});
+
+// 함수 정의
 const copyToClipboard = (text) => {
   navigator.clipboard
     .writeText(text)
@@ -126,35 +156,32 @@ const saveLoginInfo = () => {
   alert('로그인 정보가 저장되었습니다.');
 };
 
-const account = ref({
-  logo: new URL('../../assets/tving.png', import.meta.url).href,
-  title: '6개월 티빙 모임',
-  id: '45227485-25662',
-  progress: 70,
-  members: [
-    { id: 1, name: '홍길동' },
-    { id: 2, name: '김길동' },
-    { id: 3, name: '장길동' },
-    { id: 4, name: '조길동' },
-  ],
-  transactions: [
-    { id: 1, name: 'TVING 결제', date: '2024.11.08 12:40', amount: '17000', isMain: true },
-    { id: 2, name: '홍길동', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-    { id: 3, name: '박소연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-    { id: 4, name: '김미연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-  ],
-});
+// 본인만 납부 처리
+const payMyMembershipFee = () => {
+  const myMember = account.value.members.find((member) => member.id === 1); // 본인 식별
+  if (myMember) {
+    myMember.paymentStatus = 'paid';
+    alert('이번 달 회비가 납부되었습니다.');
+  }
+};
 
-const avatarImage = new URL('../../assets/puton.png', import.meta.url).href;
-
+// 모달 관리
 const isModalOpen = ref(false);
 
-const teamMembersExcludingSelf = computed(() =>
-  account.value.members.filter((member) => member.id !== 1) // 본인을 제외한 팀원 필터링
-);
+const openModal = () => {
+  isModalOpen.value = true;
+};
 
-const openModal = () => (isModalOpen.value = true);
-const closeModal = () => (isModalOpen.value = false);
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
+// 미납부자 필터링
+const unpaidMembersExcludingSelf = computed(() =>
+  account.value.members.filter(
+    (member) => member.id !== 1 && member.paymentStatus === 'unpaid'
+  )
+);
 
 const pokeLeader = () => {
   alert('이 모임통장의 팀장을 쿡쿡 찔렀습니다!');
@@ -165,8 +192,9 @@ const pokeMember = (member) => {
   alert(`${member.name}님을 쿡쿡 찔렀습니다!`);
   closeModal();
 };
-
 </script>
+
+
 
 <style scoped>
 .container {
