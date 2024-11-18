@@ -13,10 +13,10 @@
         <img :src="account.logo" alt="모임 로고" class="logo" />
         <div class="card-info">
           <h3>{{ account.title }}</h3>
-          <p>{{ account.id }}</p>
+          <p>{{ account.idDetail }}</p>
         </div>
-        <!-- account.period가 있을 때만 배지를 표시 -->
-        <span v-if="account.period" class="badge">{{ account.period }}</span>
+        <!-- account.role(팀장/팀원) 표시 -->
+        <span v-if="account.role" class="badge">{{ account.role }}</span>
         <button class="menu-button">⋮</button>
       </div>
 
@@ -38,14 +38,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Footer from '@/components/common/Footer.vue';
 
-const router = useRouter()
-
-// 현재 사용자 역할 설정 (팀장 또는 팀원)
-const currentUserRole = ref('팀장') // '팀장' or '팀원'
+const router = useRouter();
 
 const accounts = ref([
   {
@@ -53,51 +50,58 @@ const accounts = ref([
     logo: new URL('../../assets/tving.png', import.meta.url).href,
     title: '6개월 티빙 모임',
     idDetail: '45227485-25662',
-    period: '팀장',
     progress: 70,
     duration: '6개월',
     participants: 4,
-    isActive: true
+    isActive: true,
+    role: '팀장', // 역할 추가
   },
   {
     id: 'malhaevoca',
     logo: new URL('../../assets/malhaevoca.png', import.meta.url).href,
     title: '말해보카로 영어공부',
     idDetail: '120295485-45452',
-    period: '팀원',
     progress: 50,
     duration: '1년',
     participants: 2,
-    isActive: true
+    isActive: true,
+    role: '팀원', // 역할 추가
   },
   {
     id: 'wavve',
     logo: new URL('../../assets/wavve.png', import.meta.url).href,
     title: '한 달 웨이브 모여라',
     idDetail: '458987485-78662',
-    period: '팀장',
     progress: 30,
     duration: '3개월',
     participants: 1,
-    isActive: false
-  }
-])
+    isActive: false,
+    role: '팀장', // 역할 추가
+  },
+]);
 
 const navigateToDetail = (account) => {
-  // 비활성화된 카드에 접근하려는 경우
+  // 비활성화된 카드 접근
   if (!account.isActive) {
-    if (currentUserRole.value === '팀장') {
-      // 팀장은 접근 가능
-      router.push({ name: 'AccountDetail', params: { id: account.id } })
+    if (account.role === '팀장') {
+      router.push({
+        name: 'AccountDetail',
+        params: { id: account.id },
+        query: { ...account },
+      });
     } else {
-      // 팀원은 접근 불가
-      alert('비활성화된 모임입니다.')
+      alert('비활성화된 모임입니다.');
     }
   } else {
-    // 활성화된 카드에는 모두 접근 가능
-    router.push({ name: 'AccountDetail', params: { id: account.id } })
+    // 활성화된 카드 접근
+    router.push({
+      name: 'AccountDetail',
+      params: { id: account.id },
+      query: { ...account },
+    });
   }
-}
+};
+
 </script>
 
 <style scoped>

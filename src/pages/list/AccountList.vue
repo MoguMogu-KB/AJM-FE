@@ -9,8 +9,7 @@
           <Footer />
         </div>
       </header>
-  
-      <!-- 스크롤 가능한 리스트 -->
+
       <div class="account-scroll-container">
         <div class="account-card" v-for="(account, index) in accounts" :key="index">
           <img :src="account.logo" alt="통장 로고" class="account-logo" />
@@ -31,8 +30,6 @@
         <br>
         <br>
       </div>
-  
-      <!-- 방 만들기 버튼 -->
       <button class="create-room-button">방 만들기</button>
     </div>
   </template>
@@ -72,7 +69,6 @@
     background-color: #f9f9f9;
   }
   
-  /* 헤더 */
   .header {
     display: flex;
     align-items: center;
@@ -106,7 +102,6 @@
     border-radius: 8px;
   }
   
-  /* 스크롤 가능한 리스트 */
   .account-scroll-container {
     max-height: 300px;
     overflow-y: scroll;
@@ -159,7 +154,6 @@
     border-radius: 10px;
   }
   
-  /* 추천 카드 */
   .recommendation-card {
     background-color: #ffe599;
     border-radius: 10px;
@@ -174,7 +168,6 @@
     color: #333;
   }
   
-  /* 방 만들기 버튼 */
   .create-room-button {
     display: block;
     width: 20%;

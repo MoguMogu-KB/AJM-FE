@@ -1,18 +1,18 @@
 <template>
   <div class="container">
     <div class="header">
-      <img :src="account.logo" alt="모임 로고" class="logo" />
+      <img :src="logo" alt="모임 로고" class="logo" />
       <div class="info">
-        <h2>{{ account.title }}</h2>
-        <p>{{ account.id }}</p>
+        <h2>{{ title }}</h2>
+        <p>{{ idDetail }}</p>
       </div>
       <button class="menu-button">⋮</button>
     </div>
-    <br>
+    <br />
     <div class="progress-bar-container">
-      <div class="progress-bar" :style="{ width: account.progress + '%' }"></div>
+      <div class="progress-bar" :style="{ width: progress + '%' }"></div>
     </div>
-    <br>
+    <br />
     <div class="login-info">
       <h3>로그인 정보 공유</h3>
       <div class="input-group">
@@ -28,37 +28,36 @@
         </span>
         <button class="eye-button" @click="togglePasswordVisibility">👁️</button>
       </div>
-      <div v-if="isLeader">
+      <div v-if="role === '팀장'">
         <button class="save-button" @click="saveLoginInfo">로그인 정보 저장</button>
       </div>
     </div>
 
-    <div class="pay-button-container">
-  <button class="pay-button">이번 달 회비 납부하기</button>
-</div>
-
+    <div v-if="role === '팀원'" class="pay-button-container">
+      <button class="pay-button">이번 달 회비 납부하기</button>
+    </div>
 
     <div class="member-status-container">
       <h3>이번 달 납부 현황</h3>
-      <br>
+      <br />
       <div class="avatars">
-        <div v-for="member in account.members" :key="member.id" class="avatar">
+        <div v-for="member in members" :key="member.id" class="avatar">
           <img :src="avatarImage" alt="member avatar" />
           <p>{{ member.name }}</p>
         </div>
       </div>
     </div>
-    <br>
+    <br />
     <div class="payment-history">
       <h3>모임 통장 결제 내역</h3>
-      <br>
+      <br />
       <div
-        v-for="transaction in account.transactions"
+        v-for="transaction in transactions"
         :key="transaction.id"
         class="transaction"
       >
         <div class="transaction-info">
-          <strong>{{ transaction.name }}</strong><br>
+          <strong>{{ transaction.name }}</strong><br />
           <span>{{ transaction.date }}</span>
         </div>
         <span
@@ -68,17 +67,42 @@
         </span>
       </div>
     </div>
-    <br>
-    <button class="leave-button">이 모임에서 나가기</button>
+    <br />
+    <button class="leave-button" v-if="role === '팀원'">
+      이 모임에서 나가기
+    </button>
     <Footer />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 import Footer from '@/components/common/Footer.vue';
 
-const isLeader = ref(true); // 팀장 여부: true => 팀장, false => 팀원
+const route = useRoute();
+
+// Account 정보 (AccountHome에서 전달된 데이터)
+const logo = route.query.logo;
+const title = route.query.title;
+const idDetail = route.query.idDetail;
+const progress = route.query.progress;
+const role = route.query.role;
+
+// 회원 정보 및 거래 내역 예제 데이터 (실제 데이터는 백엔드에서 받아올 수 있음)
+const members = [
+  { id: 1, name: '홍길동' },
+  { id: 2, name: '김길동' },
+  { id: 3, name: '장길동' },
+  { id: 4, name: '조길동' },
+];
+
+const transactions = [
+  { id: 1, name: 'TVING 결제', date: '2024.11.08 12:40', amount: '17000', isMain: true },
+  { id: 2, name: '홍길동', date: '2024.11.07 12:40', amount: '4250', isMain: false },
+  { id: 3, name: '박소연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
+  { id: 4, name: '김미연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
+];
 
 const username = ref('ajm123');
 const password = ref('mySecretPassword');
@@ -99,27 +123,9 @@ const saveLoginInfo = () => {
   alert('로그인 정보가 저장되었습니다.');
 };
 
-const account = ref({
-  logo: new URL('../../assets/tving.png', import.meta.url).href,
-  title: '6개월 티빙 모임',
-  id: '45227485-25662',
-  progress: 70,
-  members: [
-    { id: 1, name: '홍길동' },
-    { id: 2, name: '김길동' },
-    { id: 3, name: '장길동' },
-    { id: 4, name: '조길동' },
-  ],
-  transactions: [
-    { id: 1, name: 'TVING 결제', date: '2024.11.08 12:40', amount: '17000', isMain: true },
-    { id: 2, name: '홍길동', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-    { id: 3, name: '박소연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-    { id: 4, name: '김미연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-  ],
-});
-
 const avatarImage = new URL('../../assets/puton.png', import.meta.url).href;
 </script>
+
 
 <style scoped>
 .container {
