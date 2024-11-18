@@ -7,7 +7,7 @@
       v-for="(account, index) in accounts"
       :key="index"
       :class="{ 'inactive-card': !account.isActive }"
-      @click="navigateToDetail(account)"
+      @click="handleCardClick(account)"
     >
       <div class="card-header">
         <img :src="account.logo" alt="모임 로고" class="logo" />
@@ -53,7 +53,7 @@ const accounts = ref([
     duration: '6개월',
     participants: 4,
     isActive: true,
-    role: '팀장', // 역할 추가
+    role: '팀장',
   },
   {
     id: 'malhaevoca',
@@ -64,7 +64,7 @@ const accounts = ref([
     duration: '1년',
     participants: 2,
     isActive: true,
-    role: '팀원', // 역할 추가
+    role: '팀원',
   },
   {
     id: 'wavve',
@@ -75,24 +75,23 @@ const accounts = ref([
     duration: '3개월',
     participants: 1,
     isActive: false,
-    role: '팀장', // 역할 추가
+    role: '팀장',
   },
 ]);
 
-const navigateToDetail = (account) => {
-  // 비활성화된 카드 접근
+const handleCardClick = (account) => {
   if (!account.isActive) {
     if (account.role === '팀장') {
+      alert('팀장 권한으로 비활성화된 모임에 접근합니다.');
       router.push({
         name: 'AccountDetail',
         params: { id: account.id },
         query: { ...account },
       });
     } else {
-      alert('비활성화된 모임입니다.');
+      alert('비활성화된 모임입니다. 접근할 수 없습니다.');
     }
   } else {
-    // 활성화된 카드 접근
     router.push({
       name: 'AccountDetail',
       params: { id: account.id },
@@ -100,7 +99,6 @@ const navigateToDetail = (account) => {
     });
   }
 };
-
 </script>
 
 <style scoped>
@@ -109,7 +107,7 @@ const navigateToDetail = (account) => {
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   margin-bottom: 1rem;
 }
 
@@ -134,9 +132,9 @@ h2 {
 }
 
 .logo {
-  width: 50px;
-  height: 50px;
-  margin-right: 20px;
+  width: 45px;
+  height: 45px;
+  margin-right: 15px;
   border-radius: 10px;
 }
 
@@ -145,27 +143,36 @@ h2 {
 }
 
 .card-info h3 {
-  font-size: 1rem;
+  font-size: 0.85rem;
   margin: 0;
+  white-space: nowrap; /* 한 줄 유지 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 생략표 처리 */
 }
 
 .card-info p {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #555;
+  white-space: nowrap; /* 한 줄 유지 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 생략표 처리 */
 }
 
 .badge {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   background-color: #ffd700;
   color: #fff;
-  padding: 2px 8px;
+  padding: 2px 6px;
   border-radius: 10px;
+  white-space: nowrap; /* 한 줄 유지 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 생략표 처리 */
 }
 
 .menu-button {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: #888;
 }
 
@@ -173,7 +180,7 @@ h2 {
   background-color: #e0e0e0;
   border-radius: 10px;
   height: 6px;
-  margin: 10px 0;
+  margin: 8px 0;
   overflow: hidden;
 }
 
@@ -184,16 +191,22 @@ h2 {
 }
 
 .duration {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #888;
   margin-top: 4px;
   text-align: right;
+  white-space: nowrap; /* 한 줄 유지 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 생략표 처리 */
 }
 
 .participants {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #888;
   text-align: right;
+  white-space: nowrap; /* 한 줄 유지 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 생략표 처리 */
 }
 
 /* 비활성화된 카드 스타일 */
@@ -211,4 +224,39 @@ h2 {
 .inactive-card:hover {
   transform: none;
 }
+
+/* 모바일 환경에서 추가 크기 조정 */
+@media (max-width: 480px) {
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  .card-info h3 {
+    font-size: 0.8rem;
+  }
+
+  .card-info p {
+    font-size: 0.7rem;
+  }
+
+  .badge {
+    font-size: 0.65rem;
+    padding: 1px 5px;
+  }
+
+  .duration,
+  .participants {
+    font-size: 0.7rem;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .menu-button {
+    font-size: 1rem;
+  }
+}
+
 </style>

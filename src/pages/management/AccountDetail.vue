@@ -14,14 +14,15 @@
     </div>
     <br>
     <div class="login-info">
-      <h3>로그인 정보 공유</h3>
+      <h5>로그인 정보 공유</h5>
+      <br>
       <div class="input-group">
-        <label>아이디</label>
+        <label class="id">아이디</label>
         <span class="text">{{ username }}</span>
         <button class="copy-button" @click="copyToClipboard(username)">복사</button>
       </div>
       <div class="input-group">
-        <label>비밀번호</label>
+        <label class="pwd">비밀번호</label>
         <span :class="['text', 'password']">
           <span v-if="isPasswordVisible">{{ password }}</span>
           <span v-else>●●●●●●●●</span>
@@ -40,7 +41,8 @@
 
     <div class="member-status-container">
       <div class="member-status-header">
-        <h3>이번 달 납부 현황</h3>
+        <h5>이번 달 납부 현황</h5>
+        <br>
         <button class="poke-button" @click="openModal">미납부자 찌르기</button>
       </div>
       <br>
@@ -53,7 +55,7 @@
     </div>
     <br>
     <div class="payment-history">
-      <h3>모임 통장 결제 내역</h3>
+      <h5>모임 통장 결제 내역</h5>
       <br>
       <div
         v-for="transaction in account.transactions"
@@ -168,7 +170,7 @@ const pokeMember = (member) => {
 
 <style scoped>
 .container {
-  padding: 20px;
+  padding: 10px;
   background-color: #f9f9f9;
 }
 
@@ -176,42 +178,58 @@ const pokeMember = (member) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .logo {
-  width: 60px;
-  height: 60px;
-  margin-right: 15px;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.id {
+  font-size: 0.7rem;
+}
+
+.pwd {
+  font-size: 0.7rem;
 }
 
 .info {
-  text-align: center;
+  flex: 1;
+  text-align: left;
 }
 
 .info h2 {
-  font-size: 1.5rem;
+  font-size: 1rem;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .info p {
+  font-size: 0.75rem;
   color: #888;
-  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .menu-button {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: #888;
+  cursor: pointer;
 }
 
 .progress-bar-container {
   background-color: #e0e0e0;
   border-radius: 10px;
   height: 6px;
-  margin: 10px 0;
-  position: relative;
+  margin: 8px 0;
+  overflow: hidden;
 }
 
 .progress-bar {
@@ -221,11 +239,11 @@ const pokeMember = (member) => {
 }
 
 .login-info {
-  padding: 20px;
+  padding: 15px;
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #fff;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .input-group {
@@ -236,8 +254,11 @@ const pokeMember = (member) => {
 }
 
 .text {
-  font-size: 1rem;
+  font-size: 0.85rem;
   color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .copy-button,
@@ -245,15 +266,14 @@ const pokeMember = (member) => {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 0.7rem;
   color: #888;
 }
 
 .save-button {
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #FFDC8B;
+  padding: 8px;
+  background-color: #ffdc8b;
   color: #656363;
   border: none;
   border-radius: 5px;
@@ -264,19 +284,22 @@ const pokeMember = (member) => {
 .pay-button-container {
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .pay-button {
   width: 90%;
   padding: 10px;
-  margin: 10px;
-  background-color: #FFDC8B;
+  background-color: #ffdc8b;
   color: #656363;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   text-align: center;
+}
+
+.password {
+  font-size: 0.7rem;
 }
 
 .member-status-header {
@@ -287,11 +310,11 @@ const pokeMember = (member) => {
 }
 
 .member-status-container {
-  padding: 20px;
+  padding: 15px;
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #fff;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .avatars {
@@ -305,23 +328,23 @@ const pokeMember = (member) => {
 }
 
 .avatar img {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
 }
 
 .payment-history {
-  padding: 20px;
+  padding: 15px;
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #fff;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .transaction {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 8px 0;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -334,13 +357,13 @@ const pokeMember = (member) => {
 }
 
 .transaction-info span {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: #888;
 }
 
 .amount {
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 0.85rem;
 }
 
 .highlight-red {
@@ -362,21 +385,20 @@ const pokeMember = (member) => {
   cursor: pointer;
 }
 
-/* 찌르기 버튼 */
 .poke-button {
   background-color: #ff5252;
   color: white;
   border: none;
-  padding: 8px 12px;
+  padding: 6px 8px;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 0.5rem;
 }
 
 .poke-button:hover {
   background-color: #ff0000;
 }
 
-/* 모달 스타일 */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -392,36 +414,36 @@ const pokeMember = (member) => {
 
 .modal {
   background-color: white;
-  padding: 20px;
+  padding: 15px;
   border-radius: 10px;
-  width: 300px;
+  width: 280px;
   text-align: center;
 }
 
 .member-list {
-  list-style: none; /* 말머리 부호 제거 */
+  list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .member-item {
   display: flex;
-  justify-content: space-between; /* 이름과 버튼 양쪽 배치 */
-  align-items: center; /* 수직 가운데 정렬 */
-  margin-bottom: 10px; /* 항목 간격 */
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .member-name {
-  flex: 1; /* 이름 영역 확장 */
-  text-align: left; /* 왼쪽 정렬 */
-  margin-right: 15px; /* 버튼과 간격 추가 */
+  flex: 1;
+  text-align: left;
+  margin-right: 10px;
 }
 
 .confirm-button {
   background-color: #ff5252;
   color: white;
   border: none;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 5px;
   cursor: pointer;
 }
@@ -433,10 +455,43 @@ const pokeMember = (member) => {
 .close-button {
   background-color: #ddd;
   border: none;
-  padding: 8px 12px;
+  padding: 6px 10px;
   margin-top: 10px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .info h2 {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .info p {
+    font-size: 0.7rem;
+    text-align: center;
+  }
+
+  .menu-button {
+    font-size: 1rem;
+  }
+
+  .text {
+    font-size: 0.7rem;
+  }
+
+  .amount {
+    font-size: 0.8rem;
+  }
+
+  .leave-button {
+    font-size: 0.85rem;
+  }
 }
 
 </style>
