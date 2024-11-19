@@ -126,10 +126,6 @@ const filteredAccounts = computed(() => {
   width: 100px;
 }
 
-.filter-search {
-  display: flex;
-  gap: 5px;
-}
 
 .dropdown {
   position: relative;
@@ -162,15 +158,37 @@ const filteredAccounts = computed(() => {
   color: white;
 }
 
-.filter-button,
+.filter-search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.filter-button{
+  background-color: #9a9a9a;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  width: auto;
+  text-align: center;
+  white-space: nowrap;
+}
+
 .search-button {
   background-color: #ffd700;
   color: white;
   border: none;
-  padding: 6px 10px;
-  border-radius: 5px;
+  padding: 5px 10px;
   font-size: 0.8rem;
+  border-radius: 5px;
   cursor: pointer;
+  width: auto;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .search-input {
@@ -180,6 +198,7 @@ const filteredAccounts = computed(() => {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 
 .account-scroll-container {
   max-height: 250px;
