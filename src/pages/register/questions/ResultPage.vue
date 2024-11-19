@@ -29,10 +29,10 @@
   };
   
   onMounted(() => {
-    // 로딩 화면을 7초 동안 표시한 후 로딩 상태를 false로 변경
+    // 로딩 화면을 2초 동안 표시한 후 로딩 상태를 false로 변경
     setTimeout(() => {
       isLoading.value = false;
-    }, 7000);
+    }, 2000);
   });
   </script>
   
