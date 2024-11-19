@@ -50,7 +50,7 @@
   
     // 회원가입 프로세스 완료
     // router.push("/welcome");
-    router.push("/home");
+    router.push("/Q1");
   };
   </script>
   
