@@ -18,6 +18,8 @@ import AccountDetail from '../pages/management/AccountDetail.vue'
 import AccountList from '../pages/list/AccountList.vue'
 import MyPage from '@/pages/mypage/MyPage.vue'
 
+import Subscribe from "@/pages/subscribe/Subscribe.vue";
+
 
 
 
@@ -99,6 +101,11 @@ const routes = [
     path: '/accountlist',
     name: 'AccountList',
     component: AccountList
+  },
+  {
+    path: '/subscribe',
+    name: 'Subscribe',
+    component: Subscribe
   }
 ]
 
