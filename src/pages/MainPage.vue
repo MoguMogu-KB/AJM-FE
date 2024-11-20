@@ -57,10 +57,8 @@
     console.log("로그인 시도:", { userId: userId.value, password: password.value });
   };
   </script>
-  
-  <style scoped>
-  /* 기본 레이아웃 */
-  .main-container {
+<style>
+.main-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -201,5 +199,6 @@
       font-size: 32px;
     }
   }
-  </style>
+
+</style>
   
