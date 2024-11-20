@@ -89,10 +89,12 @@
   import { ref } from 'vue';
   import ProgressBar from './ProgressBar.vue';
   
+  
   const router = useRouter();
   const selectedOptions = ref([]);
   const isModalVisible = ref(false);
   const customOption = ref('');
+  const selectedOptionsString = ref("");
   
   // 선택/해제 기능
   const toggleOption = (option) => {
@@ -124,7 +126,13 @@
   
   // 다음 화면으로 이동
   const goToNextStep = () => {
-    console.log('선택된 OTT 서비스:', selectedOptions.value);
+    console.log('선택된 구독 서비스:', selectedOptions.value);
+    
+    selectedOptionsString.value = selectedOptions.value.join(',');
+
+    console.log('선택된 옵션 (문자열):', selectedOptionsString.value);
+
+    localStorage.setItem("ottServices", selectedOptionsString.value);
     router.push('/Q3');
   };
   </script>

@@ -77,7 +77,7 @@ const goToNext = async () => {
         console.error("회원가입 실패:", error);
         alert("회원가입 중 오류가 발생했습니다.");
     }
-
+    
     // 데이터 저장 후 다음 페이지로 이동
     router.push("/account-select");
 };
