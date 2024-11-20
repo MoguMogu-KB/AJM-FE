@@ -30,11 +30,11 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="password">비밀번호</label>
+            <label for="pwd">비밀번호</label>
             <input
-              type="password"
-              id="password"
-              v-model="password"
+              type="pwd"
+              id="pwd"
+              v-model="pwd"
               placeholder="비밀번호를 입력하세요"
               required
             />
@@ -61,14 +61,16 @@
   <script setup>
   import { ref } from "vue";
   import { useRouter } from "vue-router";
+  import axios from 'axios';
+
   const router = useRouter();
   const name = ref("");
   const userId = ref("");
-  const password = ref("");
+  const pwd = ref("");
   const agreedToTerms = ref(false);
   
   const handleSignUp = () => {
-    if (!name.value || !userId.value || !password.value) {
+    if (!name.value || !userId.value || !pwd.value) {
       alert("모든 필드를 입력해주세요!");
       return;
     }
@@ -76,25 +78,55 @@
       alert("약관에 동의하셔야 회원가입이 가능합니다.");
       return;
     }
-    // 회원가입 API 요청
-    console.log("회원가입 데이터:", {
-      name: name.value,
-      userId: userId.value,
-      password: password.value,
-    });
   };
   
-  const checkId = () => {
-    // ID 중복 확인 로직 (예: API 요청)
-    console.log("ID 중복 확인 요청:", userId.value);
-    alert("사용 가능한 아이디입니다.");
-  };
+  const checkId = async () => {
+  if (!userId.value) {
+    alert("아이디를 입력해주세요.");
+    return;
+  }
+  console.log(userId.value);
+
+  try {
+    // Axios를 이용해 백엔드 API로 GET 요청
+    const response = await axios.get("https://7f96-14-36-176-7.ngrok-free.app/user/checkDuplicatedId", {
+        headers: {'ngrok-skip-browser-warning': '69420'},
+      params: { userId: userId.value },
+    });
+
+    console.log(response.data);
+
+    // 서버 응답 처리
+    if (response.data) {
+      alert("이미 사용 중인 아이디입니다.");
+    } else {
+      alert("사용 가능한 아이디입니다.");
+    }
+  } catch (error) {
+    console.error("ID 중복 확인 요청 실패:", error);
+    alert("ID 중복 확인 중 오류가 발생했습니다.");
+  }
+};
   const goToNext = () => {
   // if (!year.value || !month.value || !day.value || !gender.value) {
   //   alert("모든 정보를 입력해주세요!");
   //   return;
   // }
+  // 회원가입 API 요청
+  console.log("회원가입 데이터:", {
+      name: name.value,
+      userId: userId.value,
+      pwd: pwd.value,
+    });
 
+    localStorage.setItem(
+    "signupData",
+    JSON.stringify({
+        name: name.value,
+        userId: userId.value,
+        pwd: pwd.value,
+        })
+    );
   // 데이터 저장 후 다음 페이지로 이동
   router.push("/birth-gender");
 };
