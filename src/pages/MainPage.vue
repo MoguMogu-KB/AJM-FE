@@ -44,17 +44,40 @@
   
   <script setup>
   import { ref } from "vue";
+  import { useRouter } from 'vue-router';
+  import axios from 'axios';
   
+  const router = useRouter();
   const userId = ref("");
   const password = ref("");
   
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!userId.value || !password.value) {
       alert("ID와 비밀번호를 입력해주세요!");
       return;
     }
     // 로그인 로직 처리 (예: API 요청)
-    console.log("로그인 시도:", { userId: userId.value, password: password.value });
+    console.log("로그인 시도:", { userId: userId.value, pwd: password.value });
+    
+    try {
+        // Axios를 이용해 백엔드로 데이터 전송
+        const response = await axios.get("https://7f96-14-36-176-7.ngrok-free.app/user/login",
+          {
+            params: {userId : userId.value, pwd: password.value},
+            headers: {'ngrok-skip-browser-warning': '69420'}
+          }
+        );
+
+        if (response.status === 200) {
+            alert("로그인에 성공했습니다.!");
+            localStorage.setItem("userId", userId.value);
+            router.push("/home");
+        }
+    } catch (error) {
+        console.error("로그인 실패:", error);
+        alert("로그인 중 오류가 발생했습니다.");
+    }
+
   };
   </script>
   

@@ -79,6 +79,7 @@
   
   const router = useRouter();
   const selectedOptions = ref([]);
+  const selectedOptionsString = ref("");
   
   // 선택/해제 기능
   const toggleOption = (option) => {
@@ -93,6 +94,13 @@
   const goToNextStep = () => {
     // 백엔드로 선택된 옵션을 전송할 준비
     console.log('선택된 옵션:', selectedOptions.value);
+    
+    selectedOptionsString.value = selectedOptions.value.join(',');
+
+    console.log('선택된 옵션 (문자열):', selectedOptionsString.value);
+
+    localStorage.setItem("subscriptionType", selectedOptionsString.value);
+
     router.push('/Q2');
   };
   </script>

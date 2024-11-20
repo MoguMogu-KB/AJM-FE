@@ -9,12 +9,8 @@
           필터
         </button>
         <ul v-if="showDropdown" class="dropdown-menu">
-          <li
-            v-for="(category, index) in categories"
-            :key="index"
-            @click="selectCategory(category)"
-            class="dropdown-item"
-          >
+          <li v-for="(category, index) in categories" :key="index" @click="selectCategory(category)"
+            class="dropdown-item">
             {{ category }}
           </li>
         </ul>
@@ -24,11 +20,7 @@
     </div>
     <br />
     <div class="account-scroll-container">
-      <div
-        class="account-card"
-        v-for="(account, index) in filteredAccounts"
-        :key="index"
-      >
+      <div class="account-card" v-for="(account, index) in filteredAccounts" :key="index">
         <img :src="account.logo" alt="통장 로고" class="account-logo" />
         <div class="account-info">
           <h3>{{ account.title }}</h3>
@@ -165,7 +157,7 @@ const filteredAccounts = computed(() => {
   gap: 5px;
 }
 
-.filter-button{
+.filter-button {
   background-color: #9a9a9a;
   color: white;
   border: none;
@@ -291,6 +283,7 @@ const filteredAccounts = computed(() => {
 }
 
 @media screen and (max-width: 768px) {
+
   .filter-button,
   .search-button {
     padding: 5px 8px;
@@ -311,5 +304,6 @@ const filteredAccounts = computed(() => {
     padding: 8px;
     font-size: 0.8rem;
   }
+
 }
 </style>

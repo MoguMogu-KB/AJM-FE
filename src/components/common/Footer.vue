@@ -1,5 +1,10 @@
 <template>
-    <nav class="footer-nav">
+  <div 
+    class="footer-wrapper"
+    @mouseover="isVisible = true"
+    @mouseleave="isVisible = false"
+  >
+    <nav class="footer-nav" :class="{ 'footer-hidden': !isVisible }">
       <ul class="nav-list">
         <!-- 내 모임통장 -->
         <li class="nav-item">
@@ -26,66 +31,80 @@
         </li>
       </ul>
     </nav>
-  </template>
-  
-  <script>
-  export default {
-    name: "Footer",
-  };
-  </script>
-  
-  <style scoped>
-  .footer-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #fff;
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    z-index: 1000;
-  }
-  
-  .nav-list {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .nav-item {
-    text-align: center;
-    flex: 1;
-  }
-  
-  .nav-item a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #333;
-    text-decoration: none;
-    padding: 5px 0;
-    transition: background-color 0.3s ease;
-  }
-  
-  .nav-item a:hover {
-    background-color: #ffd700;
-    border-radius: 8px;
-  }
-  
-  .nav-item a .icon-account,
-  .nav-item a .icon-search,
-  .nav-item a .icon-user {
-    font-size: 24px;
-    margin-bottom: 5px;
-  }
-  
-  .nav-item a span {
-    font-size: 12px;
-  }
-  </style>
-  
+  </div>
+</template>
+<script>
+export default {
+  name: "Footer",
+  data() {
+    return {
+      isVisible: false, // Footer 표시 여부를 제어
+    };
+  },
+};
+</script>
+
+<style scoped>
+.footer-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.footer-nav {
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  padding: 5px 0; /* 세로 길이를 줄이기 위해 padding을 줄임 */
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.footer-hidden {
+  transform: translateY(100%); /* Footer를 화면 아래로 숨김 */
+  opacity: 0;
+  pointer-events: none; /* 숨겨진 상태에서 클릭 방지 */
+}
+
+.nav-list {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  text-align: center;
+  flex: 1;
+}
+
+.nav-item a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #333;
+  text-decoration: none;
+  padding: 3px 0; /* 각 항목의 세로 padding을 줄임 */
+  transition: background-color 0.3s ease;
+}
+
+.nav-item a:hover {
+  background-color: #ffd700;
+  border-radius: 8px;
+}
+
+.nav-item a .icon-account,
+.nav-item a .icon-search,
+.nav-item a .icon-user {
+  font-size: 20px; /* 아이콘 크기 줄이기 */
+  margin-bottom: 3px; /* 아이콘과 텍스트 간격 줄이기 */
+}
+
+.nav-item a span {
+  font-size: 10px; /* 텍스트 크기 줄이기 */
+}
+</style>
