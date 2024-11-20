@@ -62,8 +62,12 @@ const goToNext = async () => {
     const finalData = {
         ...signupData,
         gender: gender.value,
-        age: age.value
+        age: age.value,
+        year: year.value,
+        month: month.value,
+        day: day.value
     };
+    console.log(finalData);
 
     try {
         // Axios를 이용해 백엔드로 데이터 전송
