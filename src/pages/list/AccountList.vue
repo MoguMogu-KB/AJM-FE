@@ -80,24 +80,31 @@ const categories = ["티빙", "웨이브", "디즈니플러스", "왓챠", "말�
 const accounts = ref([
   {
     logo: new URL("../../assets/tving.png", import.meta.url).href,
-    title: "티빙 6개월",
+    title: "티빙수야~",
     price: "4200",
-    duration: "3개월",
+    duration: "6개월",
     date: "매달 15일",
   },
   {
     logo: new URL("../../assets/wavve.png", import.meta.url).href,
-    title: "웨이브 1개월",
+    title: "mp3보다 웨이브",
     price: "4000",
     duration: "1개월",
     date: "매달 20일",
   },
   {
     logo: new URL("../../assets/malhaevoca.png", import.meta.url).href,
-    title: "말해보카",
+    title: "말해보카 해보카?",
     price: "55000",
     duration: "12개월",
     date: "매달 10일",
+  },
+  {
+    logo: new URL("../../assets/disneyplus.png", import.meta.url).href,
+    title: "디즈니 플러스 플러스!",
+    price: "55000",
+    duration: "12개월",
+    date: "매달 14일",
   },
 ]);
 

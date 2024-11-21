@@ -8,7 +8,7 @@
         <img :src="account.logo" alt="모임 로고" class="logo" />
         <div class="card-info">
           <h3>{{ account.title }}</h3>
-          <p>{{ account.idDetail }}</p>
+          <p>{{ account.accountNum }}</p>
         </div>
         <span v-if="account.role" class="badge">{{ account.role }}</span>
         <button class="menu-button">⋮</button>
@@ -18,7 +18,7 @@
         <div class="progress-bar" :style="{ width: account.progress + '%' }" v-if="account.isActive"></div>
       </div>
 
-      <p class="duration">{{ account.duration }}</p>
+      <p class="dueDate">{{ account.dueDate }}개월</p>
       <p class="participants">
         {{ account.isActive ? `현재 ${account.participants}명 참여 중` : '비활성화됨' }}
       </p>
@@ -38,37 +38,40 @@ const router = useRouter();
 const accounts = ref([
   {
     id: 'tving',
+    roomNum: 1,
     logo: new URL('../../assets/tving.png', import.meta.url).href,
     title: '6개월 티빙 모임',
-    idDetail: '45227485-25662',
+    accountNum: '45227485-25662',
     progress: 70,
-    duration: '6개월',
+    dueDate: 6,
     participants: 4,
     isActive: true,
-    role: '팀장',
+    role: '팀원',
   },
   {
     id: 'malhaevoca',
+    roomNum: 2,
     logo: new URL('../../assets/malhaevoca.png', import.meta.url).href,
     title: '말해보카로 영어공부',
-    idDetail: '120295485-45452',
+    accountNum: '120295485-45452',
     progress: 50,
-    duration: '1년',
+    dueDate: 12,
     participants: 2,
     isActive: true,
     role: '팀원',
   },
   {
     id: 'wavve',
+    roomNum: 3,
     logo: new URL('../../assets/wavve.png', import.meta.url).href,
     title: '한 달 웨이브 모여라',
-    idDetail: '458987485-78662',
+    accountNum: '458987485-78662',
     progress: 30,
-    duration: '3개월',
+    dueDate: 3,
     participants: 1,
     isActive: false,
-    role: '팀장',
-  },
+    role: '팀원',
+  }
 ]);
 
 const getUserSharingAccount = async () => {
@@ -215,7 +218,7 @@ h2 {
   border-radius: 10px;
 }
 
-.duration {
+.dueDate {
   font-size: 0.75rem;
   color: #888;
   margin-top: 4px;
@@ -275,7 +278,7 @@ h2 {
     padding: 1px 5px;
   }
 
-  .duration,
+  .dueDate,
   .participants {
     font-size: 0.7rem;
   }

@@ -119,7 +119,7 @@ const createRoom = async () => {
     category: subscriptionType.value,
     numberTotal: members.value,
     period: subscriptionPeriod.value,
-    dueDate: `${new Date(moneyDate.value).getFullYear()}${String(new Date(moneyDate.value).getMonth() + 1).padStart(2, '0')}${String(new Date(moneyDate.value).getDate()).padStart(2, '0')}`,
+    dueDate: String(new Date(moneyDate.value).getDate()).padStart(2, '0') // 일자만 저장
   };
 
   try {

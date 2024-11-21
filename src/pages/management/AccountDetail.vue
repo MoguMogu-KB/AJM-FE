@@ -71,10 +71,8 @@
           <strong>{{ transaction.name }}</strong><br />
           <span>{{ transaction.date }}</span>
         </div>
-        <span
-            :class="['amount', transaction.isMain ? 'highlight-red' : 'highlight-blue']"
-        >
-          {{ transaction.amount }} 원
+        <span :class="{'highlight-blue': transaction.amount > 0, 'highlight-red': transaction.amount < 0}">
+          {{ formatAmount(transaction.amount) }} 원
         </span>
       </div>
     </div>
@@ -109,7 +107,7 @@
 import axios from 'axios';
 import { ref, computed } from 'vue';
 import Footer from '@/components/common/Footer.vue';
-import axios from 'axios';
+
 
 const putonAvatarImage = new URL('../../assets/puton.png', import.meta.url).href;
 const noneAvatarImage = new URL('../../assets/none.png', import.meta.url).href;
@@ -130,14 +128,10 @@ const account = ref({
   id: '45227485-25662',
   progress: 70,
   members: [],
-  transactions: [
-    { id: 1, name: 'TVING 결제', date: '2024.11.08 12:40', amount: '17000', isMain: true },
-    { id: 2, name: '홍길동', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-    { id: 3, name: '박소연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-    { id: 4, name: '김미연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-  ],
+  transactions: [],
 });
 
+// 팀원 목록 출력
 const fetchMembers = async () => {
   const roomNum = 1;  // 실제 roomNum 값 대입 필요
 
@@ -154,8 +148,31 @@ const fetchMembers = async () => {
   }
 };
 
+// 거래 내역 출력
+const fetchTransactions = async () => {
+  const accountNumber = '1234-12345';   // 실제 accountNumber 값 대입 필요
+
+  try {
+    const response = await axios.get(`http://localhost:8080//api/roomdetails/account-transactions?accountNumber=${accountNumber}`);
+
+    account.value.transactions = response.data.map(transaction => ({
+      id: transaction.id,
+      name: transaction.transactionDetails,
+      date: transaction.transactionTime,
+      amount: transaction.amount
+    }));
+  } catch (error) {
+    console.error('거래 내역을 가져오는 데 실패했습니다.', error);
+  }
+};
+
+// 금액 천 단위로 쉼표 출력
+const formatAmount = (amount) => {
+  return amount.toLocaleString('ko-KR');
+};
 
 fetchMembers();
+fetchTransactions();
 
 // 함수 정의
 const copyToClipboard = (text) => {
@@ -206,6 +223,7 @@ const payMyMembershipFee = () => {
   }
 };
 
+
 const openModal = () => {
   fetchUnpaidMembers();
   isModalOpen.value = true;
@@ -214,7 +232,19 @@ const closeModal = () => {
   isModalOpen.value = false;
 };
 
-// 미납부자 필터링
+// 미납부자 목록 가져오기
+const fetchUnpaidMembers = async () => {
+  const roomNum = 1;  // 실제 roomNum 값 대입 필요
+
+  try {
+    const response = await axios.get(`http://localhost:8080/api/roomdetails/member/list?roomNum=${roomNum}`);
+    unpaidMembers.value = response.data;
+  } catch (error) {
+    console.error('팀원 목록을 가져오는 데 실패했습니다.', error);
+  }
+};
+
+
 const unpaidMembersExcludingSelf = computed(() =>
     account.value.members.filter(
         (member) => member.id !== 1 && member.paymentStatus === 'unpaid',
