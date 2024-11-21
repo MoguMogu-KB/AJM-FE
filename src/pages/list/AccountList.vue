@@ -135,7 +135,7 @@ const confirmModal = () => {
   // console.log("계좌를 등록 및 개설합니다.");
   // localStorage.setItem("accountNumber", "1234567890"); // 임의의 계좌 번호 저장
   // showModal.value = false;
-  router.push("/next-step"); // 다음 단계로 이동
+  router.push("/sharingaccount"); // 다음 단계로 이동
 };
 
 // 모달 취소 버튼 클릭
@@ -516,7 +516,7 @@ const closeModal = () => {
 }
 
 .modal-button.confirm {
-  background-color: #4caf50;
+  background-color: #e8a326;
   color: white;
 }
 
