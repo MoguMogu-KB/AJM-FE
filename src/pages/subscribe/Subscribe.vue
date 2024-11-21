@@ -111,9 +111,10 @@ const selectOption = (option) => {
 };
 
 const createRoom = async () => {
+  const accountNumber = localStorage.getItem("accountNum")
   const apiUrl = "http://localhost:8080/room/basic/create";
   const requestData = {
-    accountNumber: "12345-67890",
+    accountNumber: accountNumber,
     title: title.value,
     category: subscriptionType.value,
     numberTotal: members.value,
@@ -122,8 +123,9 @@ const createRoom = async () => {
   };
 
   try {
+    const userId = localStorage.getItem("userId");
     const response = await axios.post(apiUrl, requestData, {
-      params: { creatorId: "user1" },
+      params: { creatorId: userId },
     });
     console.log(response.data);
     alert("방 생성이 성공적으로 완료되었습니다!"); // 성공 메시지

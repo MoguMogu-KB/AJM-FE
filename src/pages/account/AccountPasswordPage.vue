@@ -45,22 +45,38 @@ const addDigit = (number) => {
 const submitPassword = async () => {
   if (password.value.length === 4) {
     // 실제 비밀번호 제출 로직
-    
+
     const userId = localStorage.getItem("userId");
+    const role = localStorage.getItem("ROLE");
     try {
-        // Axios를 이용해 백엔드로 데이터 전송
-        const response = await axios.post("https://7f96-14-36-176-7.ngrok-free.app/account/sharingAccount/create", null,
+      // Axios를 이용해 백엔드로 데이터 전송
+      const response = await axios.post("https://7f96-14-36-176-7.ngrok-free.app/account/sharingAccount/create", null,
         {
-          params: {userId : userId}
+          params: { userId: userId }
         });
-        if (response.status === 200) {
-            alert("새로운 모임통장용 계좌 개설이 완료되었습니다!");
+      if (response.status === 200) {
+        alert("새로운 모임통장용 계좌 개설이 완료되었습니다!");
+
+        const accountResponse = await axios.get("https://7f96-14-36-176-7.ngrok-free.app/account/sharingAccount",
+          {
+            params: { userId: userId },
+            headers: { 'ngrok-skip-browser-warning': '69420' }
+          }
+        );
+
+        const accountNum = accountResponse.data;
+        localStorage.setItem("accountNum", accountNum);
+        if (role) {
+          router.push("/subscribe");
         }
+        else {
+          router.push("Q1");
+        }
+      }
     } catch (error) {
-        console.error("계좌 개설 실패:", error);
-        alert("계좌 개설 중 오류가 발생했습니다.");
+      console.error("계좌 개설 실패:", error);
+      alert("계좌 개설 중 오류가 발생했습니다.");
     }
-    router.push("/Q1");
   }
 };
 </script>
