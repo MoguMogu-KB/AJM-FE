@@ -102,8 +102,7 @@ const toggleDropdown = () => {
 };
 
 const navigateToUrl = () => {
-  //todo url 공유통장생성 url 넣기
-  router.push("/target-url");
+  router.push("/sharingAccount");
 };
 
 const selectOption = (option) => {
