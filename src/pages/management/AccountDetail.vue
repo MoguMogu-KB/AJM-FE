@@ -13,29 +13,31 @@
       <div class="progress-bar" :style="{ width: account.progress + '%' }"></div>
     </div>
     <br>
+
+    <!-- 로그인 정보 공유 -->
     <div class="login-info">
       <h5>로그인 정보 공유</h5>
       <br>
       <div class="input-group">
+        <label class="room">방 번호</label>
+        <input type="text" v-model="roomNum" class="text-input" placeholder="방 번호를 입력하세요" />
+      </div>
+      <div class="input-group">
         <label class="id">아이디</label>
-        <span class="text">{{ username }}</span>
-        <button class="copy-button" @click="copyToClipboard(username)">복사</button>
+        <input type="text" v-model="username" class="text-input" placeholder="아이디를 입력하세요" />
       </div>
       <div class="input-group">
         <label class="pwd">비밀번호</label>
-        <span :class="['text', 'password']">
-          <span v-if="isPasswordVisible">{{ password }}</span>
-          <span v-else>●●●●●●●●</span>
-        </span>
+        <input :type="isPasswordVisible ? 'text' : 'password'" v-model="password" class="text-input" placeholder="비밀번호를 입력하세요" />
         <button class="eye-button" @click="togglePasswordVisibility">👁️</button>
       </div>
       <div v-if="isLeader">
-        <button class="save-button" @click="saveLoginInfo">로그인 정보 저장</button>
+        <button class="save-button" @click="addAccount">로그인 정보 저장</button>
       </div>
     </div>
 
+    <!-- 기존 화면 유지 -->
     <div class="pay-button-container">
-      <!-- 납부 버튼 -->
       <button class="pay-button" @click="payMyMembershipFee">이번 달 회비 납부하기</button>
     </div>
 
@@ -61,16 +63,16 @@
       <h5>모임 통장 결제 내역</h5>
       <br>
       <div
-        v-for="transaction in account.transactions"
-        :key="transaction.id"
-        class="transaction"
+          v-for="transaction in account.transactions"
+          :key="transaction.id"
+          class="transaction"
       >
         <div class="transaction-info">
           <strong>{{ transaction.name }}</strong><br />
           <span>{{ transaction.date }}</span>
         </div>
         <span
-          :class="['amount', transaction.isMain ? 'highlight-red' : 'highlight-blue']"
+            :class="['amount', transaction.isMain ? 'highlight-red' : 'highlight-blue']"
         >
           {{ transaction.amount }} 원
         </span>
@@ -103,20 +105,19 @@
   </div>
 </template>
 
-
 <script setup>
 import axios from 'axios';
 import { ref, computed } from 'vue';
 import Footer from '@/components/common/Footer.vue';
+import axios from 'axios';
 
-// 이미지 파일 경로
 const putonAvatarImage = new URL('../../assets/puton.png', import.meta.url).href;
 const noneAvatarImage = new URL('../../assets/none.png', import.meta.url).href;
 
-// 초기 데이터
 const isLeader = ref(true);
-const username = ref('ajm123');
-const password = ref('mySecretPassword');
+const roomNum = ref('');
+const username = ref('');
+const password = ref('');
 const isPasswordVisible = ref(false);
 
 const unpaidMembers = ref([]);    // 팀원 목록 저장
@@ -168,24 +169,48 @@ const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value;
 };
 
-const saveLoginInfo = () => {
-  alert('로그인 정보가 저장되었습니다.');
+const addAccount = async () => {
+  if (!roomNum.value || !username.value.trim() || !password.value.trim()) {
+    alert('모든 필드를 입력해주세요.');
+    return;
+  }
+
+  const apiUrl = `http://localhost:8080/api/roomdetails/account`;
+
+  try {
+    const response = await axios.post(apiUrl, null, {
+      params: {
+        roomNum: roomNum.value,
+        subscribeId: username.value.trim(),
+        subscribePwd: password.value.trim(),
+      },
+    });
+
+    if (response.status === 200) {
+      alert('로그인 정보가 성공적으로 저장되었습니다.');
+    } else {
+      alert('저장 실패. 다시 시도해주세요.');
+    }
+  } catch (error) {
+    console.error('Error adding account:', error);
+    alert('서버와의 통신에 실패했습니다.');
+  }
 };
 
-// 본인만 납부 처리
+// 모달, 회비 납부 등의 기존 기능 유지
 const payMyMembershipFee = () => {
-  const myMember = account.value.members.find((member) => member.id === 1); // 본인 식별
+  const myMember = account.value.members.find((member) => member.id === 1);
   if (myMember) {
     myMember.paymentStatus = 'paid';
     alert('이번 달 회비가 납부되었습니다.');
   }
 };
 
+
 const openModal = () => {
   fetchUnpaidMembers();
   isModalOpen.value = true;
 };
-
 const closeModal = () => {
   isModalOpen.value = false;
 };
@@ -202,15 +227,15 @@ const fetchUnpaidMembers = async () => {
   }
 };
 
-// 미납부자 필터링
+
 const unpaidMembersExcludingSelf = computed(() =>
-  account.value.members.filter(
-    (member) => member.id !== 1 && member.paymentStatus === 'unpaid'
-  )
+    account.value.members.filter(
+        (member) => member.id !== 1 && member.paymentStatus === 'unpaid',
+    ),
 );
 
 const pokeLeader = () => {
-  alert('이 모임통장의 팀장을 쿡쿡 찔렀습니다!');
+  alert('팀장을 찔렀습니다!');
   closeModal();
 };
 

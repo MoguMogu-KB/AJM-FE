@@ -7,7 +7,7 @@
       <label for="account">계좌선택</label>
       <select v-model="selectedAccount" id="account">
         <option disabled value="">계좌를 선택하세요</option>
-        <option v-for="account in accounts" :key="account.id" :value="account.id">
+        <option v-for="account in accounts" :key="account.id" :value="account.number">
           {{ account.name }} ({{ account.number }})
         </option>
       </select>
@@ -15,14 +15,14 @@
 
     <!-- 새 계좌로 시작하기 버튼 -->
     <button @click="startNewAccount" class="new-account-btn">
-      + 새 계좌로 시작하기
+      + 새 계좌 개설하기
     </button>
 
     <!-- 거래명 별표처리 토글 -->
-    <div class="toggle-group">
+    <!-- <div class="toggle-group">
       <label for="transaction-mark" class="toggle-label">거래명 별표처리</label>
       <input type="checkbox" id="transaction-mark" v-model="transactionMark" />
-    </div>
+    </div> -->
 
     <!-- "다음" 버튼 -->
     <button :disabled="!selectedAccount" @click="nextStep" class="next-btn">
@@ -55,12 +55,14 @@ const nextStep = () => {
     return;
   }
   console.log("선택된 계좌 ID:", selectedAccount.value);
-  router.push("/next-step"); // 다음 페이지로 이동
+  localStorage.setItem("accountNumber", selectedAccount.value);
+  router.push("/startterms"); // 다음 페이지로 이동
 };
 
 // 새 계좌로 시작하기
 const startNewAccount = () => {
   console.log("새 계좌로 시작하기 버튼 클릭");
+  router.push("/startterms");
 };
 </script>
 
@@ -129,12 +131,27 @@ button:hover:enabled {
 }
 
 .new-account-btn {
-  background-color: #007bff;
+  background-color: #f4b400;
   color: white;
+  border: none;
+  padding: 14px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
 
 .new-account-btn:hover:enabled {
-  background-color: #0056b3;
+  background: linear-gradient(45deg, #f9c502, #f4b400);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+  transform: translateY(-2px); /* 약간의 올라가는 효과 */
+  color: #fff;
+}
+
+.new-account-btn:active:enabled {
+  transform: translateY(0); /* 클릭 시 다시 원래 위치 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 그림자 축소 */
 }
 
 /* 거래명 별표처리 토글 */

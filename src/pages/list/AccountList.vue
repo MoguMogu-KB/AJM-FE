@@ -119,13 +119,13 @@ const filteredAccounts = computed(() => {
 
 // 방 만들기 버튼 클릭 시 로직
 const makeRoom = () => {
-  const accountNumber = localStorage.getItem("accountNumber");
-  if (!accountNumber) {
+  const accountNumber = localStorage.getItem("accountNum");
+  if (accountNumber == "no account") {
     // 계좌 번호가 없는 경우 모달을 표시
     showModal.value = true;
   } else {
     // 계좌 번호가 있는 경우 다음 단계로 이동
-    router.push("/next-step");
+    router.push("/subscribe");
   }
 };
 

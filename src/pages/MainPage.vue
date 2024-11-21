@@ -70,12 +70,13 @@
 
         if (response.status === 200) {
             alert("로그인에 성공했습니다.!");
-            localStorage.setItem("userId", userId.value);
+            localStorage.setItem("userId", response.data);
+            localStorage.setItem("ROLE", "user");
             router.push("/home");
         }
     } catch (error) {
         console.error("로그인 실패:", error);
-        alert("로그인 중 오류가 발생했습니다.");
+        alert("ID나 비밀번호가 일치하지 않습니다.");
     }
 
   };

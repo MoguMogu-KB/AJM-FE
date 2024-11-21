@@ -46,7 +46,6 @@ const selectAccount = (number) => {
   console.log(selectedAccount.value);
 };
 const makeNewAccount = () =>{
-  localStorage.setItem("accountNumber", "93002-100-567483")
   router.push("/termsone");
 }
 const warningNoAccount = () =>{
