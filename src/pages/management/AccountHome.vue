@@ -117,6 +117,25 @@ const fetchAccounts = async () => {
   }
 };
 
+const fetchSurvey = async () => {
+  const userId = localStorage.getItem("userId"); // 사용자 ID 가져오기
+  try {
+    const response = await axios.get(`https://7f96-14-36-176-7.ngrok-free.app/user/survey/${userId}`, {
+      headers: { 'ngrok-skip-browser-warning': '69420' }
+    });
+    console.log(response);
+    const ottServices = response.data.ottServices;
+    const subscriptionType = response.data.subscriptionType;
+
+    localStorage.setItem("ottServices", ottServices);
+    localStorage.setItem("subscriptionType", subscriptionType);
+
+  } catch (error) {
+    console.error("Failed to fetch room accounts:", error);
+    alert("모임 정보를 불러오는 중 오류가 발생했습니다.");
+  }
+};
+
 // 카테고리별 로고를 반환하는 헬퍼 함수
 const getLogoByCategory = (category) => {
   const logos = {
@@ -134,6 +153,7 @@ const getLogoByCategory = (category) => {
 onMounted(() => {
   getUserSharingAccount();
   fetchAccounts();
+  fetchSurvey();
 });
 
 const handleCardClick = (account) => {

@@ -62,8 +62,8 @@ const goToNextStep = async () => {
         );
         if (response.status === 200) {
             console.log("설문결과 저장 완료");
-            localStorage.removeItem("subscriptionType");
-            localStorage.removeItem("ottServices") // LocalStorage 데이터 삭제
+            // localStorage.removeItem("subscriptionType");
+            // localStorage.removeItem("ottServices") // LocalStorage 데이터 삭제
         }
     } catch (error) {
         console.error("설문조사 실패:", error);
