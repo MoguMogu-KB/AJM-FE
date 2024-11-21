@@ -270,7 +270,7 @@ const fetchUnpaidMembers = async () => {
     const response = await axios.get(`http://localhost:8080/api/roomdetails/member/list?roomNum=${roomNum}`);
     unpaidMembers.value = response.data;
   } catch (error) {
-    console.error('팀원 목록을 가져오는 데 실패했습니다.', error);
+    console.error('팀원 목록을 가져오기에 실패했습니다.', error);
   }
 };
 
