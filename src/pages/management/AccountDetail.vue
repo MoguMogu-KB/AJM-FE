@@ -71,10 +71,8 @@
           <strong>{{ transaction.name }}</strong><br />
           <span>{{ transaction.date }}</span>
         </div>
-        <span
-            :class="['amount', transaction.isMain ? 'highlight-red' : 'highlight-blue']"
-        >
-          {{ transaction.amount }} 원
+        <span :class="{'highlight-blue': transaction.amount > 0, 'highlight-red': transaction.amount < 0}">
+          {{ formatAmount(transaction.amount) }} 원
         </span>
       </div>
     </div>
@@ -109,7 +107,7 @@
 import axios from 'axios';
 import { ref, computed } from 'vue';
 import Footer from '@/components/common/Footer.vue';
-import axios from 'axios';
+
 
 const putonAvatarImage = new URL('../../assets/puton.png', import.meta.url).href;
 const noneAvatarImage = new URL('../../assets/none.png', import.meta.url).href;
@@ -130,14 +128,10 @@ const account = ref({
   id: '45227485-25662',
   progress: 70,
   members: [],
-  transactions: [
-    { id: 1, name: 'TVING 결제', date: '2024.11.08 12:40', amount: '17000', isMain: true },
-    { id: 2, name: '홍길동', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-    { id: 3, name: '박소연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-    { id: 4, name: '김미연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
-  ],
+  transactions: [],
 });
 
+// 팀원 목록 출력
 const fetchMembers = async () => {
   const roomNum = 1;  // 실제 roomNum 값 대입 필요
 
@@ -154,8 +148,61 @@ const fetchMembers = async () => {
   }
 };
 
+// 거래 내역 출력
+const fetchTransactions = async () => {
+  const accountNumber = '1234-12345';   // 실제 accountNumber 값 대입 필요
+
+  try {
+    const response = await axios.get(`http://localhost:8080//api/roomdetails/account-transactions?accountNumber=${accountNumber}`);
+
+    account.value.transactions = response.data.map(transaction => ({
+      id: transaction.id,
+      name: transaction.transactionDetails,
+      date: transaction.transactionTime,
+      amount: transaction.amount
+    }));
+  } catch (error) {
+    console.error('거래 내역을 가져오는 데 실패했습니다.', error);
+  }
+};
+
+// 금액 천 단위로 쉼표 출력
+const formatAmount = (amount) => {
+  return amount.toLocaleString('ko-KR');
+};
+
+// 회비 납부
+const payMyMembershipFee = async () => {
+  const accountNumber = "1234-12345";    // 실제 값 대입 필요
+  const transactionDetails = "박지은";    // 실제 값 대입 필요
+  const amount = 10000;                  // 실제 값 대입 필요
+
+  try {
+    const response = await axios.post("http://localhost:8080/api/roomdetails/add-transaction", null,
+      {
+        params: {
+          accountNumber,
+          transactionDetails,
+          amount,
+        },
+      }
+    );
+
+    if (response.status === 200 && response.data.includes("Payment Successfully")) {
+      alert("회비 납부가 성공적으로 완료되었습니다.");
+      await fetchTransactions();  // 거래 내역 새로 고침
+      await fetchMembers();       // 팀원 목록 새로 고침
+    } else {
+      alert("회비 납부에 실패했습니다. 다시 시도해주세요.");
+    }
+  } catch (error) {
+    console.error("회비 납부 요청 중 오류 발생:", error);
+    alert("서버와의 통신 중 오류가 발생했습니다.");
+  }
+};
 
 fetchMembers();
+fetchTransactions();
 
 // 함수 정의
 const copyToClipboard = (text) => {
@@ -198,13 +245,13 @@ const addAccount = async () => {
 };
 
 // 모달, 회비 납부 등의 기존 기능 유지
-const payMyMembershipFee = () => {
-  const myMember = account.value.members.find((member) => member.id === 1);
-  if (myMember) {
-    myMember.paymentStatus = 'paid';
-    alert('이번 달 회비가 납부되었습니다.');
-  }
-};
+// const payMyMembershipFee = () => {
+//   const myMember = account.value.members.find((member) => member.id === 1);
+//   if (myMember) {
+//     myMember.paymentStatus = 'paid';
+//     alert('이번 달 회비가 납부되었습니다.');
+//   }
+// };
 
 
 const openModal = () => {
@@ -431,6 +478,8 @@ const pokeMember = async (member) => {
   border-radius: 10px;
   background-color: #fff;
   margin-bottom: 15px;
+  max-height: 300px; /* 스크롤 높이 제한 */
+  overflow-y: auto; /* 스크롤 활성화 */
 }
 
 .transaction {
