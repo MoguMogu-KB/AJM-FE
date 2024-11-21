@@ -2,13 +2,8 @@
   <div class="container">
     <h2>나의 모임통장</h2>
 
-    <div
-      class="card"
-      v-for="(account, index) in accounts"
-      :key="index"
-      :class="{ 'inactive-card': !account.isActive }"
-      @click="handleCardClick(account)"
-    >
+    <div class="card" v-for="(account, index) in accounts" :key="index" :class="{ 'inactive-card': !account.isActive }"
+      @click="handleCardClick(account)">
       <div class="card-header">
         <img :src="account.logo" alt="모임 로고" class="logo" />
         <div class="card-info">
@@ -20,11 +15,7 @@
       </div>
 
       <div class="progress-bar-container">
-        <div
-          class="progress-bar"
-          :style="{ width: account.progress + '%' }"
-          v-if="account.isActive"
-        ></div>
+        <div class="progress-bar" :style="{ width: account.progress + '%' }" v-if="account.isActive"></div>
       </div>
 
       <p class="duration">{{ account.duration }}</p>
@@ -37,8 +28,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'; // onMounted 추가
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 import Footer from '@/components/common/Footer.vue';
 
 const router = useRouter();
@@ -79,6 +71,29 @@ const accounts = ref([
   },
 ]);
 
+const getUserSharingAccount = async () => {
+  const userId = localStorage.getItem("userId");
+  try {
+    const accountResponse = await axios.get("https://7f96-14-36-176-7.ngrok-free.app/account/sharingAccount",
+      {
+        params: { userId: userId },
+        headers: { 'ngrok-skip-browser-warning': '69420' }
+      }
+    );
+
+    const accountNum = accountResponse.data;
+    localStorage.setItem("accountNum", accountNum);
+  } catch (error) {
+    console.error("사용자 모임통장 계좌 불러오기:", error);
+    alert("사용자 계좌 불러오기 중 오류가 발생했습니다.");
+  }
+};
+
+// 페이지 로드 시 getUserSharingAccount 실행
+onMounted(() => {
+  getUserSharingAccount();
+});
+
 const handleCardClick = (account) => {
   if (!account.isActive) {
     if (account.role === '팀장') {
@@ -100,6 +115,7 @@ const handleCardClick = (account) => {
   }
 };
 </script>
+
 
 <style scoped>
 .container {
@@ -145,17 +161,23 @@ h2 {
 .card-info h3 {
   font-size: 0.85rem;
   margin: 0;
-  white-space: nowrap; /* 한 줄 유지 */
-  overflow: hidden; /* 넘치는 텍스트 숨김 */
-  text-overflow: ellipsis; /* 생략표 처리 */
+  white-space: nowrap;
+  /* 한 줄 유지 */
+  overflow: hidden;
+  /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis;
+  /* 생략표 처리 */
 }
 
 .card-info p {
   font-size: 0.75rem;
   color: #555;
-  white-space: nowrap; /* 한 줄 유지 */
-  overflow: hidden; /* 넘치는 텍스트 숨김 */
-  text-overflow: ellipsis; /* 생략표 처리 */
+  white-space: nowrap;
+  /* 한 줄 유지 */
+  overflow: hidden;
+  /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis;
+  /* 생략표 처리 */
 }
 
 .badge {
@@ -164,9 +186,12 @@ h2 {
   color: #fff;
   padding: 2px 6px;
   border-radius: 10px;
-  white-space: nowrap; /* 한 줄 유지 */
-  overflow: hidden; /* 넘치는 텍스트 숨김 */
-  text-overflow: ellipsis; /* 생략표 처리 */
+  white-space: nowrap;
+  /* 한 줄 유지 */
+  overflow: hidden;
+  /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis;
+  /* 생략표 처리 */
 }
 
 .menu-button {
@@ -195,18 +220,24 @@ h2 {
   color: #888;
   margin-top: 4px;
   text-align: right;
-  white-space: nowrap; /* 한 줄 유지 */
-  overflow: hidden; /* 넘치는 텍스트 숨김 */
-  text-overflow: ellipsis; /* 생략표 처리 */
+  white-space: nowrap;
+  /* 한 줄 유지 */
+  overflow: hidden;
+  /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis;
+  /* 생략표 처리 */
 }
 
 .participants {
   font-size: 0.75rem;
   color: #888;
   text-align: right;
-  white-space: nowrap; /* 한 줄 유지 */
-  overflow: hidden; /* 넘치는 텍스트 숨김 */
-  text-overflow: ellipsis; /* 생략표 처리 */
+  white-space: nowrap;
+  /* 한 줄 유지 */
+  overflow: hidden;
+  /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis;
+  /* 생략표 처리 */
 }
 
 /* 비활성화된 카드 스타일 */
@@ -258,5 +289,4 @@ h2 {
     font-size: 1rem;
   }
 }
-
 </style>

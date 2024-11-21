@@ -70,20 +70,19 @@
 
         if (response.status === 200) {
             alert("로그인에 성공했습니다.!");
-            localStorage.setItem("userId", userId.value);
+            localStorage.setItem("userId", response.data);
+            localStorage.setItem("ROLE", "user");
             router.push("/home");
         }
     } catch (error) {
         console.error("로그인 실패:", error);
-        alert("로그인 중 오류가 발생했습니다.");
+        alert("ID나 비밀번호가 일치하지 않습니다.");
     }
 
   };
   </script>
-  
-  <style scoped>
-  /* 기본 레이아웃 */
-  .main-container {
+<style>
+.main-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -92,7 +91,7 @@
   }
   
   .header {
-    background-color: #f4b400;
+    /* background-color: #f4b400; */
     color: white;
     text-align: center;
     padding: 16px 0;
@@ -102,7 +101,7 @@
   
   main {
     flex: 1;
-    display: flex;
+    /* display: flex; */
     justify-content: center;
     align-items: center;
   }
@@ -224,5 +223,6 @@
       font-size: 32px;
     }
   }
-  </style>
+
+</style>
   
