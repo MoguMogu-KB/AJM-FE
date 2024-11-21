@@ -117,7 +117,7 @@ const createRoom = async () => {
     accountNumber: accountNumber,
     title: title.value,
     category: subscriptionType.value,
-    numberTotal: members.value,
+    memberTotal: members.value,
     period: subscriptionPeriod.value,
     dueDate: String(new Date(moneyDate.value).getDate()).padStart(2, '0') // 일자만 저장
   };

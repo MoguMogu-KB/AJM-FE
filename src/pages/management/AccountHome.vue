@@ -71,7 +71,7 @@ const accounts = ref([
     participants: 1,
     isActive: false,
     role: '팀원',
-  }
+  },
 ]);
 
 const getUserSharingAccount = async () => {
@@ -92,9 +92,48 @@ const getUserSharingAccount = async () => {
   }
 };
 
+const fetchAccounts = async () => {
+  const userId = localStorage.getItem("userId"); // 사용자 ID 가져오기
+  try {
+    const response = await axios.get("https://7f96-14-36-176-7.ngrok-free.app/room/user", {
+      params: { userId: userId },
+      headers: { 'ngrok-skip-browser-warning': '69420' }
+    });
+    const newAccounts = response.data.map((room) => ({
+      roomNum: room.roomNum,
+      logo: getLogoByCategory(room.category), // 카테고리에 따라 로고 설정
+      title: room.title,
+      accountNum: room.accountNumber,
+      progress: 0,// 진행률 계산
+      dueDate: room.dueDate,
+      participants: 1, // 현재 참여자 수
+      isActive: true, // 활성 상태 설정
+      role: "팀장", // 필요 시 role 추가
+    }));
+    accounts.value = [...accounts.value, ...newAccounts]; // 기존 데이터와 병합
+  } catch (error) {
+    console.error("Failed to fetch room accounts:", error);
+    alert("모임 정보를 불러오는 중 오류가 발생했습니다.");
+  }
+};
+
+// 카테고리별 로고를 반환하는 헬퍼 함수
+const getLogoByCategory = (category) => {
+  const logos = {
+    "넷플릭스": new URL('../../assets/netflix.png', import.meta.url).href,
+    "티빙": new URL('../../assets/tving.png', import.meta.url).href,
+    "디즈니플러스": new URL('../../assets/disney.png', import.meta.url).href,
+    "애플 뮤직": new URL('../../assets/apple.png', import.meta.url).href,
+    "스포티파이": new URL('../../assets/spotify.png', import.meta.url).href
+    // 필요한 카테고리에 따라 로고 추가
+  };
+  return logos[category] || new URL('../../assets/default.png', import.meta.url).href;
+};
+
 // 페이지 로드 시 getUserSharingAccount 실행
 onMounted(() => {
   getUserSharingAccount();
+  fetchAccounts();
 });
 
 const handleCardClick = (account) => {
@@ -110,6 +149,8 @@ const handleCardClick = (account) => {
       alert('비활성화된 모임입니다. 접근할 수 없습니다.');
     }
   } else {
+    localStorage.setItem("roomAccountNum", account.accountNum);
+    localStorage.setItem("roomNum", account.roomNum);
     router.push({
       name: 'AccountDetail',
       params: { id: account.id },
