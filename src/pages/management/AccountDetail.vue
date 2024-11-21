@@ -239,20 +239,9 @@ const addAccount = async () => {
       alert('저장 실패. 다시 시도해주세요.');
     }
   } catch (error) {
-    console.error('Error adding account:', error);
     alert('서버와의 통신에 실패했습니다.');
   }
 };
-
-// 모달, 회비 납부 등의 기존 기능 유지
-// const payMyMembershipFee = () => {
-//   const myMember = account.value.members.find((member) => member.id === 1);
-//   if (myMember) {
-//     myMember.paymentStatus = 'paid';
-//     alert('이번 달 회비가 납부되었습니다.');
-//   }
-// };
-
 
 const openModal = () => {
   fetchUnpaidMembers();
@@ -270,7 +259,7 @@ const fetchUnpaidMembers = async () => {
     const response = await axios.get(`http://localhost:8080/api/roomdetails/member/list?roomNum=${roomNum}`);
     unpaidMembers.value = response.data;
   } catch (error) {
-    console.error('팀원 목록을 가져오기에 실패했습니다.', error);
+    console.error('팀원 목록 가져오기에 실패했습니다.', error);
   }
 };
 
@@ -634,7 +623,6 @@ const pokeMember = async (member) => {
     font-size: 0.85rem;
   }
 }
-
 </style>
 
 
