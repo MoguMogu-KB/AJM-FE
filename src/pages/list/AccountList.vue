@@ -112,10 +112,11 @@ const accounts = ref([
 
 const openai = new OpenAI({
   organization: "org-GKPGgiClQ2thaj7NQWA26IUx",
-  apiKey: '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',
+  apiKey: `${import.meta.env.VITE_OPENAI_API_KEY}`,
   dangerouslyAllowBrowser: true
 });
 
+console.log("API Key:", import.meta.env.VITE_OPENAI_API_KEY);
 
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value;
@@ -143,7 +144,7 @@ const fetchRecommendation = async () => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer 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",
+          Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
         },
       }
     );
