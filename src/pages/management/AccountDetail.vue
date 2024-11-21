@@ -60,10 +60,7 @@
       <br>
       <div class="avatars">
         <div v-for="member in account.members" :key="member.id" class="avatar">
-          <img
-            :src="member.payment === 1 ? putonAvatarImage : noneAvatarImage"
-            alt="member avatar"
-          />
+          <img :src="member.payment === 1 ? putonAvatarImage : noneAvatarImage" alt="member avatar" />
           <p>{{ member.name }}</p>
         </div>
       </div>
@@ -72,16 +69,12 @@
     <div class="payment-history">
       <h5>모임 통장 결제 내역</h5>
       <br>
-      <div
-          v-for="transaction in account.transactions"
-          :key="transaction.id"
-          class="transaction"
-      >
+      <div v-for="transaction in account.transactions" :key="transaction.id" class="transaction">
         <div class="transaction-info">
           <strong>{{ transaction.name }}</strong><br />
           <span>{{ transaction.date }}</span>
         </div>
-        <span :class="{'highlight-blue': transaction.amount > 0, 'highlight-red': transaction.amount < 0}">
+        <span :class="{ 'highlight-blue': transaction.amount > 0, 'highlight-red': transaction.amount < 0 }">
           {{ formatAmount(transaction.amount) }} 원
         </span>
       </div>
@@ -90,10 +83,10 @@
     <button class="leave-button">이 모임에서 나가기</button>
     <Footer />
 
-    
+
     <div v-if="isModalOpen" class="modal-backdrop">
       <div class="modal" @click.stop>
-        <h3 >미납부자 쿡쿡 찌르기</h3>
+        <h3>미납부자 쿡쿡 찌르기</h3>
         <div v-if="isLeader">
           <p>어떤 팀원을 찌르시겠습니까?</p><br>
           <ul>
@@ -127,7 +120,7 @@ const roomNum = ref('');
 const username = ref('');
 const password = ref('');
 const isPasswordVisible = ref(false);
-const isEditMode = ref(false);  
+const isEditMode = ref(false);
 
 const unpaidMembers = ref([]);    // 팀원 목록 저장
 const isModalOpen = ref(false);   // 모달
@@ -168,13 +161,15 @@ const toggleEditMode = () => {
 const fetchRoomBasicInfo = async () => {
   try {
     const roomNum = localStorage.getItem('roomNum');
-    const response = await axios.get(`http://localhost:8080/api/roomdetails/basic-info?roomNum=${roomNum}`);
-    
+    const response = await axios.get(`https://7f96-14-36-176-7.ngrok-free.app/api/roomdetails/basic-info?roomNum=${roomNum}`,{
+      headers: { 'ngrok-skip-browser-warning': '69420' }
+    });
+
     // API 응답 데이터로 account 객체 업데이트
     account.value.title = response.data.title;
     account.value.category = response.data.subscriptionType;
     account.value.date = response.data.fundraisingDate;
-    
+
     account.value.id = localStorage.getItem('roomAccountNum');
   } catch (error) {
     console.error('Error fetching room basic info:', error);
@@ -187,7 +182,9 @@ fetchRoomBasicInfo();
 const fetchSubscriptionAccountInfo = async () => {
   const roomNum = localStorage.getItem('roomNum');
   try {
-    const response = await axios.get(`http://localhost:8080/api/roomdetails/subscription-account?roomNum=${roomNum}`);
+    const response = await axios.get(`https://7f96-14-36-176-7.ngrok-free.app/api/roomdetails/subscription-account?roomNum=${roomNum}`,{
+      headers: { 'ngrok-skip-browser-warning': '69420' }
+    });
     const subscriptionAccount = response.data;
 
     username.value = subscriptionAccount.accountId;
@@ -204,8 +201,12 @@ const fetchMembers = async () => {
   const roomNum = localStorage.getItem('roomNum');
 
   try {
-    const response = await axios.get(`http://localhost:8080/api/roomdetails/participants?roomNum=${roomNum}`);
-    
+    const response = await axios.get(`https://7f96-14-36-176-7.ngrok-free.app/api/roomdetails/participants?roomNum=${roomNum}`,
+      {
+        headers: { 'ngrok-skip-browser-warning': '69420' }
+      }
+    );
+
     account.value.members = response.data.map(member => ({
       name: member.name,
       role: member.role,
@@ -221,7 +222,9 @@ const fetchTransactions = async () => {
   const accountNumber = localStorage.getItem('roomAccountNum');
 
   try {
-    const response = await axios.get(`http://localhost:8080//api/roomdetails/account-transactions?accountNumber=${accountNumber}`);
+    const response = await axios.get(`https://7f96-14-36-176-7.ngrok-free.app/api/roomdetails/account-transactions?accountNumber=${accountNumber}`,{
+      headers: { 'ngrok-skip-browser-warning': '69420' }
+    });
 
     account.value.transactions = response.data.map(transaction => ({
       id: transaction.id,
@@ -246,7 +249,7 @@ const payMyMembershipFee = async () => {
   const amount = 10000;                  // 실제 값 대입 필요
 
   try {
-    const response = await axios.post("http://localhost:8080/api/roomdetails/add-transaction", null,
+    const response = await axios.post("https://7f96-14-36-176-7.ngrok-free.app/api/roomdetails/add-transaction", null,
       {
         params: {
           accountNumber,
@@ -279,7 +282,7 @@ const updatePaymentState = async () => {
   };
 
   try {
-    const response = await axios.put("http://localhost:8080/api/roomdetails/update/payment/state", requestData);
+    const response = await axios.put("https://7f96-14-36-176-7.ngrok-free.app/api/roomdetails/update/payment/state", requestData);
 
     if (response.status === 200) {
       console.log("납부 상태가 성공적으로 업데이트되었습니다.");
@@ -309,7 +312,7 @@ const togglePasswordVisibility = () => {
 const addAccount = async () => {
   const roomNum = localStorage.getItem('roomNum');
 
-  const apiUrl = `http://localhost:8080/api/roomdetails/update-account`;
+  const apiUrl = `https://7f96-14-36-176-7.ngrok-free.app/api/roomdetails/update-account`;
 
   try {
     const response = await axios.put(apiUrl, {
@@ -318,7 +321,7 @@ const addAccount = async () => {
       subscribePwd: password.value.trim(),
     }, {
       headers: {
-        'Content-Type': 'application/json', 
+        'Content-Type': 'application/json',
       },
     });
 
@@ -345,7 +348,9 @@ const fetchUnpaidMembers = async () => {
   const roomNum = localStorage.getItem('roomNum');
 
   try {
-    const response = await axios.get(`http://localhost:8080/api/roomdetails/member/list?roomNum=${roomNum}`);
+    const response = await axios.get(`https://7f96-14-36-176-7.ngrok-free.app/api/roomdetails/member/list?roomNum=${roomNum}`,{
+      headers: { 'ngrok-skip-browser-warning': '69420' }
+    });
     unpaidMembers.value = response.data;
   } catch (error) {
     console.error('팀원 목록 가져오기에 실패했습니다.', error);
@@ -354,9 +359,9 @@ const fetchUnpaidMembers = async () => {
 
 
 const unpaidMembersExcludingSelf = computed(() =>
-    account.value.members.filter(
-        (member) => member.id !== 1 && member.paymentStatus === 'unpaid',
-    ),
+  account.value.members.filter(
+    (member) => member.id !== 1 && member.paymentStatus === 'unpaid',
+  ),
 );
 
 const pokeLeader = () => {
@@ -366,10 +371,10 @@ const pokeLeader = () => {
 
 const pokeMember = async (member) => {
   try {
-    const response = await axios.post(`http://localhost:8080/user/add-warning`, null, {
-      params: { 
-          name: member
-        }
+    const response = await axios.post(`https://7f96-14-36-176-7.ngrok-free.app/user/add-warning`, null, {
+      params: {
+        name: member
+      }
     });
 
     if (response.data.includes(`Warning count increased for user: ${member}`)) {
@@ -377,7 +382,7 @@ const pokeMember = async (member) => {
     } else {
       alert(`${member}님 찌르기에 실패했습니다.`);
     }
-    console.log(response.data); 
+    console.log(response.data);
     closeModal();
   } catch (error) {
     console.error(`${member}님 찌르기 요청 실패:`, error);
@@ -557,8 +562,10 @@ const pokeMember = async (member) => {
   border-radius: 10px;
   background-color: #fff;
   margin-bottom: 15px;
-  max-height: 300px; /* 스크롤 높이 제한 */
-  overflow-y: auto; /* 스크롤 활성화 */
+  max-height: 300px;
+  /* 스크롤 높이 제한 */
+  overflow-y: auto;
+  /* 스크롤 활성화 */
 }
 
 .transaction {

@@ -71,7 +71,7 @@ const goToNext = async () => {
 
     try {
         // Axios를 이용해 백엔드로 데이터 전송
-        const response = await axios.post("http://localhost:8080/user/register", finalData);
+        const response = await axios.post("https://7f96-14-36-176-7.ngrok-free.app/user/register", finalData);
         if (response.status === 200) {
             alert("회원가입이 완료되었습니다!");
             localStorage.setItem("userId", finalData.userId);

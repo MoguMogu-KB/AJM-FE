@@ -58,7 +58,7 @@ const handleLogin = async () => {
 
   try {
     // 로그인 API 호출
-    const response = await axios.get("http://localhost:8080/user/login", {
+    const response = await axios.get("https://7f96-14-36-176-7.ngrok-free.app/user/login", {
       params: { userId: userId.value, pwd: password.value },
       headers: { 'ngrok-skip-browser-warning': '69420' }
     });
@@ -87,7 +87,9 @@ const fetchWarnings = async () => {
   try {
     const userId = localStorage.getItem('userId');
 
-    const response = await axios.get(`http://localhost:8080/user/warning/${userId}`);
+    const response = await axios.get(`https://7f96-14-36-176-7.ngrok-free.app/user/warning/${userId}`,{
+      headers: { 'ngrok-skip-browser-warning': '69420' }
+    });
     warnings.value = response.data.warning || 0;
   } catch (error) {
     console.error("경고 상태 조회 실패:", error);
