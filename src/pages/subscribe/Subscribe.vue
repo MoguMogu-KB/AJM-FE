@@ -258,7 +258,7 @@ const navigateHome = () => {
 
 /* 버튼 스타일 */
 .next-button {
-  background-color: #007bff;
+  background-color: #f4b400;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -270,7 +270,7 @@ const navigateHome = () => {
 }
 
 .next-button:hover {
-  background-color: #0056b3;
+  background-color: #f4b400;
 }
 
 /* 미디어 쿼리 추가 */
@@ -365,12 +365,12 @@ const navigateHome = () => {
 }
 
 .modal-button:first-child {
-  background-color: #007bff;
+  background-color: #f4b400;
   color: white;
 }
 
 .modal-button:first-child:hover {
-  background-color: #0056b3;
+  background-color: #f4b400;
 }
 
 .modal-button:last-child {
