@@ -1,7 +1,7 @@
 <template>
   <div class="account-selection-container">
     <h2>모임통장으로 사용할 계좌를 선택해 주세요.</h2>
-    
+
     <!-- 계좌 선택 드롭다운 -->
     <div class="account-select">
       <label for="account">계좌선택</label>
@@ -31,27 +31,36 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      accounts: [
-        { id: 1, name: '용돈통장', number: '1234-5678-9101' },
-        { id: 2, name: '여행통장', number: '9876-5432-1010' },
-      ],
-      selectedAccount: '',
-      transactionMark: false, // 거래명 별표처리 상태
-    };
-  },
-  methods: {
-    nextStep() {
-      this.$emit('next');
-    },
-    startNewAccount() {
-      // 새 계좌 시작 로직 처리
-      console.log("새 계좌로 시작하기 버튼 클릭");
-    },
-  },
+<script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+// 계좌 목록
+const accounts = ref([
+  { id: 1, name: "KB나라사랑우대통장", number: "930002-00-1254686" },
+  { id: 2, name: "주택청약종합저축", number: "930002-00-1243547" },
+  { id: 3, name: "KB청년희망적금", number: "930002-00-1234567" },
+]);
+
+// 선택된 계좌와 거래명 별표처리 상태
+const selectedAccount = ref("");
+const transactionMark = ref(false);
+
+const router = useRouter();
+
+// 다음 단계로 이동
+const nextStep = () => {
+  if (!selectedAccount.value) {
+    alert("계좌를 선택해주세요.");
+    return;
+  }
+  console.log("선택된 계좌 ID:", selectedAccount.value);
+  router.push("/next-step"); // 다음 페이지로 이동
+};
+
+// 새 계좌로 시작하기
+const startNewAccount = () => {
+  console.log("새 계좌로 시작하기 버튼 클릭");
 };
 </script>
 

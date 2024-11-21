@@ -90,7 +90,7 @@
   }
   
   .header {
-    background-color: #f4b400;
+    /* background-color: #f4b400; */
     color: white;
     text-align: center;
     padding: 16px 0;
@@ -100,7 +100,7 @@
   
   main {
     flex: 1;
-    display: flex;
+    /* display: flex; */
     justify-content: center;
     align-items: center;
   }

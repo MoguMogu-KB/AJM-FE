@@ -71,7 +71,7 @@ export default {
   methods: {
     handleNext() {
       if (this.canProceed) {
-        this.$router.push('/next-page');
+        this.$router.push('/accountpassword');
       } else {
         alert("모든 필수 항목에 동의해주세요.");
       }
