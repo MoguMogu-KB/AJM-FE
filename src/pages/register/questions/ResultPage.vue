@@ -5,13 +5,16 @@
       <div v-else>
         <h2>설문조사가 완료되었습니다!</h2>
         <!-- <p>결과를 확인해보세요.</p> -->
-        <button
+         <div>
+          <button
           class="next-button"
           :disabled="isLoading"
           @click="goToHomePage"
         >
           안전모 시작하기!
         </button>
+         </div>
+        
       </div>
     </div>
   </template>
