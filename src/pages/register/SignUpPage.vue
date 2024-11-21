@@ -89,8 +89,7 @@
 
   try {
     // Axios를 이용해 백엔드 API로 GET 요청
-    const response = await axios.get("https://7f96-14-36-176-7.ngrok-free.app/user/checkDuplicatedId", {
-        headers: {'ngrok-skip-browser-warning': '69420'},
+    const response = await axios.get("http://localhost:8080/user/checkDuplicatedId", {
       params: { userId: userId.value },
     });
 

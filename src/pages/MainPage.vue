@@ -61,7 +61,7 @@
     
     try {
         // Axios를 이용해 백엔드로 데이터 전송
-        const response = await axios.get("https://7f96-14-36-176-7.ngrok-free.app/user/login",
+        const response = await axios.get("http://localhost:8080/user/login",
           {
             params: {userId : userId.value, pwd: password.value},
             headers: {'ngrok-skip-browser-warning': '69420'}

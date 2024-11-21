@@ -49,7 +49,7 @@ const submitPassword = async () => {
     const userId = localStorage.getItem("userId");
     try {
         // Axios를 이용해 백엔드로 데이터 전송
-        const response = await axios.post("https://7f96-14-36-176-7.ngrok-free.app/account/sharingAccount/create", null,
+        const response = await axios.post("http://localhost:8080/account/sharingAccount/create", null,
         {
           params: {userId : userId}
         });
