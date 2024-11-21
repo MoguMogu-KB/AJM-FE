@@ -19,10 +19,6 @@
       <h5>로그인 정보 공유</h5>
       <br>
       <div class="input-group">
-        <label class="room">방 번호</label>
-        <input type="text" v-model="roomNum" class="text-input" placeholder="방 번호를 입력하세요" />
-      </div>
-      <div class="input-group">
         <label class="id">아이디</label>
         <input type="text" v-model="username" class="text-input" placeholder="아이디를 입력하세요" />
       </div>
@@ -38,7 +34,7 @@
 
     <!-- 기존 화면 유지 -->
     <div class="pay-button-container">
-      <button class="pay-button" @click="payMyMembershipFee">이번 달 회비 납부하기</button>
+      <button class="pay-button" @click="() => { payMyMembershipFee(); updatePaymentState(); }">이번 달 회비 납부하기</button>
     </div>
 
     <div class="member-status-container">
@@ -131,6 +127,23 @@ const account = ref({
   transactions: [],
 });
 
+// 구독 계정 정보
+const fetchSubscriptionAccountInfo = async () => {
+  const roomNum = 1;  // 실제 roomNum 값 대입 필요
+
+  try {
+    const response = await axios.get(`http://localhost:8080/api/roomdetails/subscription-account?roomNum=${roomNum}`);
+    const subscriptionAccount = response.data;
+
+    username.value = subscriptionAccount.accountId;
+    password.value = subscriptionAccount.accountPassword;
+  } catch (error) {
+    console.error('구독 계정 정보를 가져오는 데 실패했습니다.', error);
+  }
+};
+
+fetchSubscriptionAccountInfo(roomNum.value);
+
 // 팀원 목록 출력
 const fetchMembers = async () => {
   const roomNum = 1;  // 실제 roomNum 값 대입 필요
@@ -171,6 +184,58 @@ const formatAmount = (amount) => {
   return amount.toLocaleString('ko-KR');
 };
 
+// 회비 납부
+const payMyMembershipFee = async () => {
+  const accountNumber = "1234-12345";    // 실제 값 대입 필요
+  const transactionDetails = "박지은";     // 실제 값 대입 필요
+  const amount = 10000;                  // 실제 값 대입 필요
+
+  try {
+    const response = await axios.post("http://localhost:8080/api/roomdetails/add-transaction", null,
+      {
+        params: {
+          accountNumber,
+          transactionDetails,
+          amount,
+        },
+      }
+    );
+
+    if (response.status === 200 && response.data.includes("Payment Successfully")) {
+      alert("회비 납부가 성공적으로 완료되었습니다.");
+      await updatePaymentState();    // 납부 상태 업데이트
+      await fetchTransactions();     // 거래 내역 새로 고침
+      await fetchMembers();          // 팀원 목록 새로 고침
+      window.location.reload();      // 페이지 새로 고침
+    } else {
+      alert("회비 납부에 실패했습니다. 다시 시도해주세요.");
+    }
+  } catch (error) {
+    console.error("회비 납부 요청 중 오류 발생:", error);
+    alert("서버와의 통신 중 오류가 발생했습니다.");
+  }
+};
+
+// 납부 상태 업데이트
+const updatePaymentState = async () => {
+  const requestData = {
+    roomNum: 1,       // 방 번호
+    id: "id3",        // 사용자 ID
+  };
+
+  try {
+    const response = await axios.put("http://localhost:8080/api/roomdetails/update/payment/state", requestData);
+
+    if (response.status === 200) {
+      console.log("납부 상태가 성공적으로 업데이트되었습니다.");
+    } else {
+      console.error("납부 상태 업데이트 실패.");
+    }
+  } catch (error) {
+    console.error("납부 상태 업데이트 중 오류 발생:", error);
+  }
+};
+
 fetchMembers();
 fetchTransactions();
 
@@ -209,20 +274,9 @@ const addAccount = async () => {
       alert('저장 실패. 다시 시도해주세요.');
     }
   } catch (error) {
-    console.error('Error adding account:', error);
     alert('서버와의 통신에 실패했습니다.');
   }
 };
-
-// 모달, 회비 납부 등의 기존 기능 유지
-const payMyMembershipFee = () => {
-  const myMember = account.value.members.find((member) => member.id === 1);
-  if (myMember) {
-    myMember.paymentStatus = 'paid';
-    alert('이번 달 회비가 납부되었습니다.');
-  }
-};
-
 
 const openModal = () => {
   fetchUnpaidMembers();
@@ -240,7 +294,7 @@ const fetchUnpaidMembers = async () => {
     const response = await axios.get(`http://localhost:8080/api/roomdetails/member/list?roomNum=${roomNum}`);
     unpaidMembers.value = response.data;
   } catch (error) {
-    console.error('팀원 목록을 가져오는 데 실패했습니다.', error);
+    console.error('팀원 목록 가져오기에 실패했습니다.', error);
   }
 };
 
@@ -270,6 +324,7 @@ const pokeMember = async (member) => {
       alert(`${member}님 찌르기에 실패했습니다.`);
     }
     console.log(response.data); 
+    closeModal();
   } catch (error) {
     console.error(`${member}님 찌르기 요청 실패:`, error);
     alert(`${member}님 찌르기에 실패했습니다.`);
@@ -448,6 +503,8 @@ const pokeMember = async (member) => {
   border-radius: 10px;
   background-color: #fff;
   margin-bottom: 15px;
+  max-height: 300px; /* 스크롤 높이 제한 */
+  overflow-y: auto; /* 스크롤 활성화 */
 }
 
 .transaction {
@@ -602,7 +659,4 @@ const pokeMember = async (member) => {
     font-size: 0.85rem;
   }
 }
-
 </style>
-
-
