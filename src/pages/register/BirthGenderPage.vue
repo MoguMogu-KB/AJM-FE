@@ -75,6 +75,7 @@ const goToNext = async () => {
         if (response.status === 200) {
             alert("회원가입이 완료되었습니다!");
             localStorage.setItem("userId", finalData.userId);
+            localStorage.setItem("ROLE", "user");
             localStorage.removeItem("signupData"); // LocalStorage 데이터 삭제
         }
     } catch (error) {
