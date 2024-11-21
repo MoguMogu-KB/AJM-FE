@@ -28,6 +28,10 @@
           <input v-model="formData.birthdayDay" type="text" placeholder="DD" maxlength="2" disabled />
         </div>
       </div>
+      <div class="form-group">
+        <label for="new-password">옐로 카드</label>
+        <input id="new-password" v-model="newPassword" type="text" />
+      </div>
       <button type="submit" class="submit-button">수정하기</button>
     </form>
     <Footer />
@@ -64,6 +68,7 @@ const fetchUserInfo = async () => {
     formData.name = user.name;
     formData.id = user.userId;
     formData.password = user.pwd;
+    formData.warning = user.warning;
     formData.birthdayYear = user.year;
     formData.birthdayMonth = user.month;
     formData.birthdayDay = user.day;

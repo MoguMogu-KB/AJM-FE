@@ -17,8 +17,13 @@ import AccountHome from '../pages/management/AccountHome.vue'
 import AccountDetail from '../pages/management/AccountDetail.vue'
 import AccountList from '../pages/list/AccountList.vue'
 import MyPage from '@/pages/mypage/MyPage.vue'
-
-
+import SharingAccount from '@/pages/account/SharingAccountPage.vue'
+import AccountPassword from '@/pages/account/AccountPasswordPage.vue'
+import TermsOne from '@/pages/account/TermsOne.vue'
+import TermsTwo from '@/pages/account/TermsTwo.vue'
+import TermsThree from '@/pages/account/TermsThree.vue'
+import StartTerms from '@/pages/account/StartTermsPage.vue'
+import EndTerms from '@/pages/account/EndTermsPage.vue'
 
 
 const routes = [
@@ -99,6 +104,41 @@ const routes = [
     path: '/accountlist',
     name: 'AccountList',
     component: AccountList
+  },
+  {
+    path: '/sharingaccount',
+    name: 'SharingAccount',
+    component: SharingAccount
+  },
+  {
+    path: '/accountpassword',
+    name: 'AccountPassword',
+    component: AccountPassword
+  },
+  {
+    path: '/termsone',
+    name: 'TermsOne',
+    component: TermsOne
+  },
+  {
+    path: '/termstwo',
+    name: 'TermsTwo',
+    component: TermsTwo
+  },
+  {
+    path: '/termsthree',
+    name: 'TermsThree',
+    component: TermsThree
+  },
+  {
+    path: '/startterms',
+    name: 'StartTerms',
+    component: StartTerms
+  },
+  {
+    path: '/endterms',
+    name: 'EndTerms',
+    component: EndTerms
   }
 ]
 
