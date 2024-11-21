@@ -1,10 +1,11 @@
 <template>
   <div class="container">
     <div class="header">
-      <img :src="account.logo" alt="모임 로고" class="logo" />
+      <img :src="getCategoryImage(account.category)" alt="모임 로고" class="logo" />
       <div class="info">
         <h2>{{ account.title }}</h2>
         <p>{{ account.id }}</p>
+        <!-- <p>{{ account.category }}</p> -->
       </div>
       <button class="menu-button">⋮</button>
     </div>
@@ -20,15 +21,28 @@
       <br>
       <div class="input-group">
         <label class="id">아이디</label>
-        <input type="text" v-model="username" class="text-input" placeholder="아이디를 입력하세요" />
+        <!-- 아이디가 수정모드일 때 input으로 변경 -->
+        <template v-if="isEditMode">
+          <input v-model="username" type="text" class="text-input" />
+        </template>
+        <template v-else>
+          <span class="text-input">{{ username }}</span>
+        </template>
       </div>
       <div class="input-group">
         <label class="pwd">비밀번호</label>
-        <input :type="isPasswordVisible ? 'text' : 'password'" v-model="password" class="text-input" placeholder="비밀번호를 입력하세요" />
-        <button class="eye-button" @click="togglePasswordVisibility">👁️</button>
+        <!-- 비밀번호가 수정모드일 때 input으로 변경 -->
+        <template v-if="isEditMode">
+          <input v-model="password" type="password" class="text-input" />
+        </template>
+        <template v-else>
+          <span class="text-input">{{ isPasswordVisible ? password : '•'.repeat(password.length) }}</span>
+          <button class="eye-button" @click="togglePasswordVisibility">👁️</button>
+        </template>
       </div>
       <div v-if="isLeader">
-        <button class="save-button" @click="addAccount">로그인 정보 저장</button>
+        <!-- 수정 버튼을 클릭하면 isEditMode를 변경 -->
+        <button class="save-button" @click="toggleEditMode">{{ isEditMode ? '저장' : '수정' }}</button>
       </div>
     </div>
 
@@ -113,24 +127,65 @@ const roomNum = ref('');
 const username = ref('');
 const password = ref('');
 const isPasswordVisible = ref(false);
+const isEditMode = ref(false);  
 
 const unpaidMembers = ref([]);    // 팀원 목록 저장
 const isModalOpen = ref(false);   // 모달
 
 
 const account = ref({
-  logo: new URL('../../assets/tving.png', import.meta.url).href,
-  title: '6개월 티빙 모임',
-  id: '45227485-25662',
+  logo: '',
+  title: '',
+  id: '',
+  category: '',
+  date: '',
   progress: 70,
   members: [],
   transactions: [],
 });
 
+// account.category에 따라 이미지를 반환하는 함수
+const getCategoryImage = (category) => {
+  if (category === '넷플릭스') {
+    return new URL('../../assets/netfelix.png', import.meta.url).href;
+  } else if (category === '티빙') {
+    return new URL('../../assets/tving.png', import.meta.url).href;
+  }
+  // 기본 이미지 (기본값을 설정)
+  return new URL('../../assets/default.png', import.meta.url).href;
+};
+
+
+// 수정 모드 토글 함수
+const toggleEditMode = () => {
+  isEditMode.value = !isEditMode.value;
+  if (!isEditMode.value) {
+    addAccount();
+  }
+};
+
+// 방 기본 정보 API 호출
+const fetchRoomBasicInfo = async () => {
+  try {
+    const roomNum = localStorage.getItem('roomNum');
+    const response = await axios.get(`http://localhost:8080/api/roomdetails/basic-info?roomNum=${roomNum}`);
+    
+    // API 응답 데이터로 account 객체 업데이트
+    account.value.title = response.data.title;
+    account.value.category = response.data.subscriptionType;
+    account.value.date = response.data.fundraisingDate;
+    
+    account.value.id = localStorage.getItem('roomAccountNum');
+  } catch (error) {
+    console.error('Error fetching room basic info:', error);
+  }
+};
+
+fetchRoomBasicInfo();
+
 // 구독 계정 정보
 const fetchSubscriptionAccountInfo = async () => {
-  const roomNum = 1;  // 실제 roomNum 값 대입 필요
-
+  const roomNum = localStorage.getItem('roomNum');
   try {
     const response = await axios.get(`http://localhost:8080/api/roomdetails/subscription-account?roomNum=${roomNum}`);
     const subscriptionAccount = response.data;
@@ -146,7 +201,7 @@ fetchSubscriptionAccountInfo(roomNum.value);
 
 // 팀원 목록 출력
 const fetchMembers = async () => {
-  const roomNum = 1;  // 실제 roomNum 값 대입 필요
+  const roomNum = localStorage.getItem('roomNum');
 
   try {
     const response = await axios.get(`http://localhost:8080/api/roomdetails/participants?roomNum=${roomNum}`);
@@ -163,7 +218,7 @@ const fetchMembers = async () => {
 
 // 거래 내역 출력
 const fetchTransactions = async () => {
-  const accountNumber = '1234-12345';   // 실제 accountNumber 값 대입 필요
+  const accountNumber = localStorage.getItem('roomAccountNum');
 
   try {
     const response = await axios.get(`http://localhost:8080//api/roomdetails/account-transactions?accountNumber=${accountNumber}`);
@@ -186,8 +241,8 @@ const formatAmount = (amount) => {
 
 // 회비 납부
 const payMyMembershipFee = async () => {
-  const accountNumber = "1234-12345";    // 실제 값 대입 필요
-  const transactionDetails = "박지은";     // 실제 값 대입 필요
+  const accountNumber = localStorage.getItem('roomAccountNum')
+  const transactionDetails = localStorage.getItem('userName')
   const amount = 10000;                  // 실제 값 대입 필요
 
   try {
@@ -219,8 +274,8 @@ const payMyMembershipFee = async () => {
 // 납부 상태 업데이트
 const updatePaymentState = async () => {
   const requestData = {
-    roomNum: 1,       // 방 번호
-    id: "id3",        // 사용자 ID
+    roomNum: localStorage.getItem('roomNum'),
+    id: localStorage.getItem('userId')
   };
 
   try {
@@ -252,24 +307,23 @@ const togglePasswordVisibility = () => {
 };
 
 const addAccount = async () => {
-  if (!roomNum.value || !username.value.trim() || !password.value.trim()) {
-    alert('모든 필드를 입력해주세요.');
-    return;
-  }
+  const roomNum = localStorage.getItem('roomNum');
 
-  const apiUrl = `http://localhost:8080/api/roomdetails/account`;
+  const apiUrl = `http://localhost:8080/api/roomdetails/update-account`;
 
   try {
-    const response = await axios.post(apiUrl, null, {
-      params: {
-        roomNum: roomNum.value,
-        subscribeId: username.value.trim(),
-        subscribePwd: password.value.trim(),
+    const response = await axios.put(apiUrl, {
+      roomNum: roomNum,
+      subscribeId: username.value.trim(),
+      subscribePwd: password.value.trim(),
+    }, {
+      headers: {
+        'Content-Type': 'application/json', 
       },
     });
 
     if (response.status === 200) {
-      alert('로그인 정보가 성공적으로 저장되었습니다.');
+      alert('구독 계정 정보가 성공적으로 변경되었습니다.');
     } else {
       alert('저장 실패. 다시 시도해주세요.');
     }
@@ -288,7 +342,7 @@ const closeModal = () => {
 
 // 미납부자 목록 가져오기
 const fetchUnpaidMembers = async () => {
-  const roomNum = 1;  // 실제 roomNum 값 대입 필요
+  const roomNum = localStorage.getItem('roomNum');
 
   try {
     const response = await axios.get(`http://localhost:8080/api/roomdetails/member/list?roomNum=${roomNum}`);
