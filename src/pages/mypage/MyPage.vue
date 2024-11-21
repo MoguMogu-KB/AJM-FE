@@ -12,11 +12,11 @@
       </div>
       <div class="form-group">
         <label for="password">비밀번호</label>
-        <input id="password" v-model="formData.password" type="password" />
+        <input id="password" v-model="formData.password" type="text" disabled />
       </div>
       <div class="form-group">
         <label for="new-password">새 비밀번호</label>
-        <input id="new-password" v-model="formData.newPassword" type="password" />
+        <input id="new-password" v-model="newPassword" type="text" />
       </div>
       <div class="form-group">
         <label>생년월일</label>
@@ -29,16 +29,8 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="email">이메일</label>
-        <div class="email-group">
-          <input id="email" v-model="formData.email" type="text" placeholder="이메일 입력" />
-          <span>@</span>
-          <select v-model="formData.emailDomain">
-            <option value="gmail.com">gmail.com</option>
-            <option value="naver.com">naver.com</option>
-            <option value="daum.net">daum.net</option>
-          </select>
-        </div>
+        <label for="new-password">옐로 카드</label>
+        <input id="new-password" v-model="newPassword" type="text" />
       </div>
       <button type="submit" class="submit-button">수정하기</button>
     </form>
@@ -47,24 +39,67 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref, onMounted } from 'vue';
 import Footer from '@/components/common/Footer.vue';
+import axios from 'axios';
 
 const formData = reactive({
-  name: '홍길동',
-  id: 'user123',
+  name: '',
+  id: '',
   password: '',
-  newPassword: '',
-  birthdayYear: '1991',
-  birthdayMonth: '07',
-  birthdayDay: '21',
-  email: '',
-  emailDomain: 'gmail.com'
-})
+  birthdayYear: '',
+  birthdayMonth: '',
+  birthdayDay: '',
+});
 
-const submitForm = () => {
-  alert('수정이 완료되었습니다!')
-}
+const newPassword = ref("");
+
+// 사용자 정보를 가져오는 함수
+const fetchUserInfo = async () => {
+  try {
+    const userId = localStorage.getItem('userId'); 
+    const response = await axios.get(`https://7f96-14-36-176-7.ngrok-free.app/user/${userId}/info`,{
+        headers: {'ngrok-skip-browser-warning': '69420'}
+    }
+    );
+    const user = response.data;
+    console.log(user);
+    // formData에 사용자 정보 매핑
+    formData.name = user.name;
+    formData.id = user.userId;
+    formData.password = user.pwd;
+    formData.warning = user.warning;
+    formData.birthdayYear = user.year;
+    formData.birthdayMonth = user.month;
+    formData.birthdayDay = user.day;
+  } catch (error) {
+    console.error("사용자 정보 가져오기 실패:", error);
+  }
+};
+
+onMounted(() => {
+  fetchUserInfo();
+});
+
+const submitForm = async () => {
+
+  const newPwd = newPassword.value;
+  console.log(newPwd);
+
+  try {
+    const userId = localStorage.getItem('userId');
+    
+    const response = await axios.put(`https://7f96-14-36-176-7.ngrok-free.app/user/${userId}/update/password`, 
+    newPwd, {
+        headers: {'ngrok-skip-browser-warning': '69420'}
+    });
+
+    console.log(response.data);
+    alert('비밀번호 수정이 완료되었습니다!');
+  } catch (error) {
+    console.error("사용자 정보 가져오기 실패:", error);
+  }
+};
 </script>
 
 <style scoped>

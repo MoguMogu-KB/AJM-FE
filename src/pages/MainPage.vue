@@ -80,10 +80,8 @@
 
   };
   </script>
-  
-  <style scoped>
-  /* 기본 레이아웃 */
-  .main-container {
+<style>
+.main-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -92,7 +90,7 @@
   }
   
   .header {
-    background-color: #f4b400;
+    /* background-color: #f4b400; */
     color: white;
     text-align: center;
     padding: 16px 0;
@@ -102,7 +100,7 @@
   
   main {
     flex: 1;
-    display: flex;
+    /* display: flex; */
     justify-content: center;
     align-items: center;
   }
@@ -224,5 +222,6 @@
       font-size: 32px;
     }
   }
-  </style>
+
+</style>
   

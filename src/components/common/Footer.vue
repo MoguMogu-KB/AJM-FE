@@ -58,7 +58,7 @@ export default {
   border-top: 1px solid #ddd;
   display: flex;
   justify-content: space-around;
-  padding: 10px 0;
+  padding: 5px 0; /* 세로 길이를 줄이기 위해 padding을 줄임 */
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -88,7 +88,7 @@ export default {
   align-items: center;
   color: #333;
   text-decoration: none;
-  padding: 5px 0;
+  padding: 3px 0; /* 각 항목의 세로 padding을 줄임 */
   transition: background-color 0.3s ease;
 }
 
@@ -100,12 +100,11 @@ export default {
 .nav-item a .icon-account,
 .nav-item a .icon-search,
 .nav-item a .icon-user {
-  font-size: 24px;
-  margin-bottom: 5px;
+  font-size: 20px; /* 아이콘 크기 줄이기 */
+  margin-bottom: 3px; /* 아이콘과 텍스트 간격 줄이기 */
 }
 
 .nav-item a span {
-  font-size: 12px;
+  font-size: 10px; /* 텍스트 크기 줄이기 */
 }
 </style>
-
