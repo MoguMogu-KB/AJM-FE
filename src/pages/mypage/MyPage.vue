@@ -58,7 +58,7 @@ const newPassword = ref("");
 const fetchUserInfo = async () => {
   try {
     const userId = localStorage.getItem('userId'); 
-    const response = await axios.get(`https://7f96-14-36-176-7.ngrok-free.app/user/${userId}/info`,{
+    const response = await axios.get(`http://localhost:8080/user/${userId}/info`,{
         headers: {'ngrok-skip-browser-warning': '69420'}
     }
     );
@@ -89,7 +89,7 @@ const submitForm = async () => {
   try {
     const userId = localStorage.getItem('userId');
     
-    const response = await axios.put(`https://7f96-14-36-176-7.ngrok-free.app/user/${userId}/update/password`, 
+    const response = await axios.put(`http://localhost:8080/user/${userId}/update/password`, 
     newPwd, {
         headers: {'ngrok-skip-browser-warning': '69420'}
     });

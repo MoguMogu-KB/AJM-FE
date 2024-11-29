@@ -51,8 +51,8 @@
       <div class="avatars">
         <div v-for="member in account.members" :key="member.id" class="avatar">
           <img
-              :src="member.paymentStatus === 'paid' ? putonAvatarImage : noneAvatarImage"
-              alt="member avatar"
+            :src="member.payment === 1 ? putonAvatarImage : noneAvatarImage"
+            alt="member avatar"
           />
           <p>{{ member.name }}</p>
         </div>
@@ -82,18 +82,15 @@
     <button class="leave-button">이 모임에서 나가기</button>
     <Footer />
 
+    
     <div v-if="isModalOpen" class="modal-backdrop">
       <div class="modal" @click.stop>
-        <h3>👉 미납부자 쿡쿡 찌르기</h3>
+        <h3 >미납부자 쿡쿡 찌르기</h3>
         <div v-if="isLeader">
-          <p>어떤 팀원을 찌르시겠습니까?</p>
-          <ul class="member-list">
-            <li
-                v-for="member in unpaidMembersExcludingSelf"
-                :key="member.id"
-                class="member-item"
-            >
-              <span class="member-name">{{ member.name }}</span>
+          <p>어떤 팀원을 찌르시겠습니까?</p><br>
+          <ul>
+            <li v-for="(member, index) in unpaidMembers" :key="index" class="member-item">
+              <span>{{ member }}</span>
               <button class="confirm-button" @click="pokeMember(member)">찌르기</button>
             </li>
           </ul>
@@ -109,6 +106,7 @@
 </template>
 
 <script setup>
+import axios from 'axios';
 import { ref, computed } from 'vue';
 import Footer from '@/components/common/Footer.vue';
 import axios from 'axios';
@@ -122,17 +120,16 @@ const username = ref('');
 const password = ref('');
 const isPasswordVisible = ref(false);
 
+const unpaidMembers = ref([]);    // 팀원 목록 저장
+const isModalOpen = ref(false);   // 모달
+
+
 const account = ref({
   logo: new URL('../../assets/tving.png', import.meta.url).href,
   title: '6개월 티빙 모임',
   id: '45227485-25662',
   progress: 70,
-  members: [
-    { id: 1, name: '홍길동', paymentStatus: 'unpaid' },
-    { id: 2, name: '김길동', paymentStatus: 'unpaid' },
-    { id: 3, name: '장길동', paymentStatus: 'unpaid' },
-    { id: 4, name: '조길동', paymentStatus: 'unpaid' },
-  ],
+  members: [],
   transactions: [
     { id: 1, name: 'TVING 결제', date: '2024.11.08 12:40', amount: '17000', isMain: true },
     { id: 2, name: '홍길동', date: '2024.11.07 12:40', amount: '4250', isMain: false },
@@ -140,6 +137,33 @@ const account = ref({
     { id: 4, name: '김미연', date: '2024.11.07 12:40', amount: '4250', isMain: false },
   ],
 });
+
+const fetchMembers = async () => {
+  const roomNum = 1;  // 실제 roomNum 값 대입 필요
+
+  try {
+    const response = await axios.get(`http://localhost:8080/api/roomdetails/participants?roomNum=${roomNum}`);
+    
+    account.value.members = response.data.map(member => ({
+      name: member.name,
+      role: member.role,
+      payment: member.payment
+    }));
+  } catch (error) {
+    console.error('팀원 목록을 가져오는 데 실패했습니다.', error);
+  }
+};
+
+
+fetchMembers();
+
+// 함수 정의
+const copyToClipboard = (text) => {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => alert('아이디가 복사되었습니다.'))
+    .catch((err) => console.error('복사 실패:', err));
+};
 
 const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value;
@@ -182,13 +206,27 @@ const payMyMembershipFee = () => {
   }
 };
 
-const isModalOpen = ref(false);
+
 const openModal = () => {
+  fetchUnpaidMembers();
   isModalOpen.value = true;
 };
 const closeModal = () => {
   isModalOpen.value = false;
 };
+
+// 미납부자 목록 가져오기
+const fetchUnpaidMembers = async () => {
+  const roomNum = 1;  // 실제 roomNum 값 대입 필요
+
+  try {
+    const response = await axios.get(`http://localhost:8080/api/roomdetails/member/list?roomNum=${roomNum}`);
+    unpaidMembers.value = response.data;
+  } catch (error) {
+    console.error('팀원 목록을 가져오는 데 실패했습니다.', error);
+  }
+};
+
 
 const unpaidMembersExcludingSelf = computed(() =>
     account.value.members.filter(
@@ -201,13 +239,26 @@ const pokeLeader = () => {
   closeModal();
 };
 
-const pokeMember = (member) => {
-  alert(`${member.name}님을 찔렀습니다!`);
-  closeModal();
+const pokeMember = async (member) => {
+  try {
+    const response = await axios.post(`http://localhost:8080/user/add-warning`, null, {
+      params: { 
+          name: member
+        }
+    });
+
+    if (response.data.includes(`Warning count increased for user: ${member}`)) {
+      alert(`${member}님 찌르기에 성공했습니다.`);
+    } else {
+      alert(`${member}님 찌르기에 실패했습니다.`);
+    }
+    console.log(response.data); 
+  } catch (error) {
+    console.error(`${member}님 찌르기 요청 실패:`, error);
+    alert(`${member}님 찌르기에 실패했습니다.`);
+  }
 };
 </script>
-
-
 
 <style scoped>
 .container {
